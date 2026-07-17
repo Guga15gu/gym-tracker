@@ -3,7 +3,7 @@ function createMuscle(name){
     throw new Error("Name is not string");
   }
 
-  return {id: crypto.randomUUID(), name}
+  return {id: crypto.randomUUID(), name};
 }
 
 function createExercise(name, muscles){
@@ -23,5 +23,5 @@ function createExercise(name, muscles){
     }
   }
 
-  return {id: crypto.randomUUID(), name, muscles}
+  return {id: crypto.randomUUID(), name, muscles};
 }
