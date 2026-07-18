@@ -1,16 +1,16 @@
-export { getExercises, addExercise }
+export { getExercises, addExercise };
 
-function getExercises(){
-    const exercises = localStorage.getItem("exercises");
-    if (exercises === null){
-        return {};
-    }
+function getExercises() {
+  const exercises = localStorage.getItem("exercises");
+  if (exercises === null) {
+    return {};
+  }
 
-    return JSON.parse(exercises);
+  return JSON.parse(exercises);
 }
-function addExercise(exercise){
-    const exercises = getExercises();
-    exercises[exercise.id] = exercise;
+function addExercise(exercise) {
+  const exercises = getExercises();
+  exercises[exercise.id] = exercise;
 
-    localStorage.setItem("exercises", JSON.stringify(exercises));
+  localStorage.setItem("exercises", JSON.stringify(exercises));
 }
