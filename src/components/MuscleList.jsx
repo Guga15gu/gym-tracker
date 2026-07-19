@@ -7,15 +7,14 @@ export default function MuscleList() {
   const [muscleName, setMuscleName] = useState("");
 
   const muscles = Object.values(musclesList);
+  const muscleQuery = muscleName.trim().toLowerCase();
 
   const filteredMuscles = muscles.filter((muscle) => {
-    const trimmedMuscleName = muscleName.trim().toLowerCase();
-
-    if (trimmedMuscleName === "") {
+    if (muscleQuery === "") {
       return true;
     }
 
-    return muscle.name.toLowerCase().startsWith(trimmedMuscleName);
+    return muscle.name.toLowerCase().startsWith(muscleQuery);
   });
 
   function handleAddMuscle(e) {
@@ -49,7 +48,9 @@ export default function MuscleList() {
           value={muscleName}
           onChange={(e) => setMuscleName(e.target.value)}
         />
-        <button type="submit">Adicionar</button>
+        <button type="submit" disabled={muscleQuery === ""}>
+          Adicionar
+        </button>
       </form>
 
       <div>input: {muscleName}</div>
