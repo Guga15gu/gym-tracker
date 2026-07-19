@@ -1,19 +1,34 @@
 import { getMuscles, addMuscle } from "../data/muscleStore";
+import { createMuscle } from "../data/muscle";
 import { useState } from "react";
 
 export default function MuscleList() {
   const [musclesList, setMusclesList] = useState(getMuscles());
 
   const muscles = Object.values(musclesList);
-  console.log(muscles);
-  console.log(muscles[0]);
-  // queria fazer um for muscle in muscles e ir criando div por div, nsei sintax pra isso
-  // e teria um if empty criaria uma div diferente
-  // pos divs do for, teria uma div com um form e botao, nsei como que faz isso tbm
-  // e antes das divs do for, teria uma div de busca, mas deixar isso para depois, teria que filtrar o array e atualizar a cada key,
+
+  const [muscleName, setMuscleName] = useState("");
+
+  function handleAddMuscle(e) {
+    e.preventDefault();
+    addMuscle(createMuscle(muscleName));
+    setMusclesList(getMuscles());
+    setMuscleName("");
+  }
+
   return (
     <>
       <div>Músculos</div>
+
+      <form onSubmit={handleAddMuscle}>
+        <input
+          value={muscleName}
+          onChange={(e) => setMuscleName(e.target.value)}
+        />
+        <button type="submit">Adicionar</button>
+      </form>
+
+      <div>input: {muscleName}</div>
 
       {muscles.length === 0 ? (
         <div>Sem músculos cadastrados</div>
