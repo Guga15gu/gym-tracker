@@ -1,12 +1,4 @@
-export { createExercise, createMuscle, createSet };
-
-function createMuscle(name) {
-  if (typeof name !== "string") {
-    throw new Error("Name is not string");
-  }
-
-  return { id: crypto.randomUUID(), name };
-}
+export { createExercise, createSet };
 
 function createExercise(name, muscles) {
   if (typeof name !== "string") {
