@@ -1,9 +1,6 @@
-import { getMuscles, addMuscle } from "../data/muscleStore";
-import { createMuscle } from "../data/muscle";
 import { useState } from "react";
 
-export default function MuscleList() {
-  const [musclesList, setMusclesList] = useState(getMuscles());
+export default function MuscleList({ musclesList, onAddMuscle }) {
   const [muscleName, setMuscleName] = useState("");
 
   const muscles = Object.values(musclesList);
@@ -19,8 +16,7 @@ export default function MuscleList() {
 
   function handleAddMuscle(e) {
     e.preventDefault();
-    addMuscle(createMuscle(muscleName));
-    setMusclesList(getMuscles());
+    onAddMuscle(muscleName);
     setMuscleName("");
   }
 

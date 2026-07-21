@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { addExercise, getExercises } from "../data/exerciseStore";
-import { getMuscles } from "../data/muscleStore";
-import { createExercise } from "../data/exercise";
 
-export default function ExerciseList() {
-  const [exercisesList, setExercisesList] = useState(getExercises());
-  const [musclesList, setMusclesList] = useState(getMuscles());
+export default function ExerciseList({
+  exercisesList,
+  musclesList,
+  onAddExercise,
+}) {
   const [showMuscles, setShowMuscles] = useState(false);
   const [exerciseName, setExerciseName] = useState("");
   const [selectedMuscles, setSelectedMuscles] = useState(new Set());
@@ -120,12 +119,9 @@ export default function ExerciseList() {
 
   function handleAddExercise(e) {
     e.preventDefault();
-    const newExercise = createExercise(trimmedExerciseName, [
-      ...selectedMuscles,
-    ]);
-    addExercise(newExercise);
 
-    setExercisesList(getExercises());
+    onAddExercise(trimmedExerciseName, selectedMuscles);
+
     setExerciseName("");
     setSelectedMuscles(new Set());
   }
