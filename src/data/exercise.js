@@ -1,4 +1,4 @@
-export { createExercise, createSet };
+export { createExercise };
 
 function createExercise(name, muscles) {
   if (typeof name !== "string") {
@@ -18,22 +18,4 @@ function createExercise(name, muscles) {
   }
 
   return { id: crypto.randomUUID(), name, muscles };
-}
-
-function createSet(reps, weight) {
-  if (!Number.isFinite(reps)) {
-    throw new Error("Reps is not a finite number");
-  }
-  if (reps <= 0) {
-    throw new Error("Reps is negative or zero");
-  }
-
-  if (!Number.isFinite(weight)) {
-    throw new Error("Weight is not a finite number");
-  }
-  if (weight < 0) {
-    throw new Error("Weight is negative");
-  }
-
-  return { reps, weight };
 }
