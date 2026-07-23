@@ -1,3 +1,14 @@
+/**
+ * @typedef {Object} Muscle
+ * @property {string} id - UUID
+ * @property {string} name - trimmed name
+ */
+/**
+ * @param {string} name
+ * @returns {Muscle}
+ * @throws {Error} if name is not string
+ * @throws {Error} if name is empty or whitespace-only
+ */
 export function createMuscle(name) {
   if (typeof name !== "string") {
     throw new Error("Name is not string");

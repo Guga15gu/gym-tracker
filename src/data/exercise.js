@@ -1,5 +1,20 @@
 export { createExercise };
 
+/**
+ * @typedef {Object} Exercise
+ * @property {string} id - UUID
+ * @property {string} name
+ * @property {string[]} muscles - array of muscle ids
+ */
+/**
+ * @param {string} name
+ * @param {string[]} muscles - array of muscle ids
+ * @returns {Exercise}
+ * @throws {Error} if name is not string
+ * @throws {Error} if muscles is not array
+ * @throws {Error} if muscles is empty array
+ * @throws {Error} if an element of muscle array is not a string
+ */
 function createExercise(name, muscles) {
   if (typeof name !== "string") {
     throw new Error("Name is not string");
