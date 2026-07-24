@@ -1,9 +1,6 @@
 import { useState } from "react";
-import { addTemplate, getTemplates } from "../data/templateStore";
-import { createTemplate } from "../data/template";
 
-export default function TemplateList() {
-  const [templatesList, setTemplatesList] = useState(() => getTemplates());
+export default function TemplateList({ templatesList, onAddTemplate }) {
   const [templateName, setTemplateName] = useState("");
   const templates = Object.values(templatesList);
 
@@ -44,10 +41,8 @@ export default function TemplateList() {
 
     if (trimmedTemplateName === "") return;
 
-    const newTemplate = createTemplate(trimmedTemplateName, []);
-    addTemplate(newTemplate);
+    onAddTemplate(trimmedTemplateName);
     setTemplateName("");
-    setTemplatesList((prev) => ({ ...prev, [newTemplate.id]: newTemplate }));
   }
 
   function handleTemplateClick(templateId) {
