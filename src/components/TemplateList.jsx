@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export default function TemplateList({ templatesList, onAddTemplate }) {
+export default function TemplateList({
+  templatesList,
+  onAddTemplate,
+  onSelectTemplate,
+}) {
   const [templateName, setTemplateName] = useState("");
   const templates = Object.values(templatesList);
 
@@ -46,6 +50,6 @@ export default function TemplateList({ templatesList, onAddTemplate }) {
   }
 
   function handleTemplateClick(templateId) {
-    console.log(`clicked on ${templateId}: ${templatesList[templateId].name}`);
+    onSelectTemplate(templateId);
   }
 }

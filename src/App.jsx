@@ -12,11 +12,13 @@ import { createTemplate } from "./data/template";
 import MuscleList from "./components/MuscleList";
 import ExerciseList from "./components/ExerciseList";
 import TemplateList from "./components/TemplateList";
+import TemplateEditor from "./components/TemplateEditor";
 
 function App() {
   const [exercisesList, setExercisesList] = useState(getExercises());
   const [musclesList, setMusclesList] = useState(getMuscles());
   const [templatesList, setTemplatesList] = useState(() => getTemplates());
+  const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 
   if (false) {
     return (
@@ -38,7 +40,17 @@ function App() {
         <TemplateList
           templatesList={templatesList}
           onAddTemplate={handleAddTemplate}
+          onSelectTemplate={handleSelectTemplate}
         ></TemplateList>
+
+        {selectedTemplateId && (
+          <TemplateEditor
+            key={selectedTemplateId}
+            template={templatesList[selectedTemplateId]}
+            exercisesList={exercisesList}
+            onUpdateTemplate={handleUpdateTemplate}
+          ></TemplateEditor>
+        )}
       </>
     );
   }
@@ -63,6 +75,12 @@ function App() {
 
     setTemplatesList((prev) => ({ ...prev, [newTemplate.id]: newTemplate }));
   }
+
+  function handleSelectTemplate(templateId) {
+    setSelectedTemplateId(templateId);
+  }
+
+  function handleUpdateTemplate(updatedtemplate) {}
 }
 
 export default App;
