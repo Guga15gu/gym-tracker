@@ -82,7 +82,14 @@ function App() {
         ))}
       </nav>
 
-      {RENDERS[currentTab]()}
+      {TABS_ARRAY.map((tab) => (
+        <div
+          key={tab.id}
+          style={{ display: tab.id === currentTab ? "block" : "none" }}
+        >
+          {RENDERS[tab.id]()}
+        </div>
+      ))}
     </>
   );
 
