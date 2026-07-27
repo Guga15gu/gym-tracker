@@ -81,7 +81,14 @@ function App() {
     setSelectedTemplateId(templateId);
   }
 
-  function handleUpdateTemplate(updatedtemplate) {}
+  function handleUpdateTemplate(updatedTemplate) {
+    saveTemplate(updatedTemplate);
+
+    setTemplatesList((prev) => ({
+      ...prev,
+      [updatedTemplate.id]: updatedTemplate,
+    }));
+  }
 }
 
 export default App;
