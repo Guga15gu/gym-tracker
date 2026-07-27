@@ -3,6 +3,11 @@
  * @property {number} reps
  * @property {number} weight
  */
+
+export function isValidSetValue(value) {
+  return Number.isFinite(value) && value >= 0;
+}
+
 /**
  * @param {number} reps
  * @param {number} weight
@@ -12,18 +17,11 @@
 
  */
 export function createExerciseSet(reps, weight) {
-  if (!Number.isFinite(reps)) {
-    throw new Error("Reps is not a finite number");
+  if (!isValidSetValue(reps)) {
+    throw new Error("reps is not a non-negative finite number");
   }
-  if (reps < 0) {
-    throw new Error("Reps is negative");
-  }
-
-  if (!Number.isFinite(weight)) {
-    throw new Error("Weight is not a finite number");
-  }
-  if (weight < 0) {
-    throw new Error("Weight is negative");
+  if (!isValidSetValue(weight)) {
+    throw new Error("weight is not a non-negative finite number");
   }
 
   return { reps, weight };
