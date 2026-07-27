@@ -74,6 +74,7 @@ function App() {
     saveTemplate(newTemplate);
 
     setTemplatesList((prev) => ({ ...prev, [newTemplate.id]: newTemplate }));
+    setSelectedTemplateId(newTemplate.id);
   }
 
   function handleSelectTemplate(templateId) {
