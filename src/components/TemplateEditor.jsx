@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { createExerciseSet } from "../data/exerciseSet";
+import { createExerciseSet, isValidSetValue } from "../data/exerciseSet";
 import { createTemplateExercise } from "../data/template";
 
-function SetsArea({ exerciseId, sets, setDraft }) {
+function SetsArea({ id, sets, setDraft }) {
   const [newReps, setNewReps] = useState("0");
   const [newWeight, setNewWeight] = useState("0");
 
@@ -22,7 +22,20 @@ function SetsArea({ exerciseId, sets, setDraft }) {
       <ul>
         {sets.map((set, index) => (
           <li key={index}>
-            {set.reps} reps {set.weight} kg
+            <input
+              type="number"
+              value={set.reps}
+              style={{ width: "4em" }}
+              onChange={(e) => editSet(index, e.target.value, set.weight)}
+            />
+            reps
+            <input
+              type="number"
+              value={set.weight}
+              style={{ width: "4em" }}
+              onChange={(e) => editSet(index, set.reps, e.target.value)}
+            />
+            weight
           </li>
         ))}
       </ul>
@@ -46,11 +59,36 @@ function SetsArea({ exerciseId, sets, setDraft }) {
     </div>
   );
 
+  function editSet(index, newReps, newWeight) {
+    const newRepsNum = Number(newReps);
+    const newWeightNum = Number(newWeight);
+
+    if (!isValidSetValue(newRepsNum)) {
+      return;
+    }
+    if (!isValidSetValue(newWeightNum)) {
+      return;
+    }
+    setDraft((prev) => ({
+      ...prev,
+      exercises: prev.exercises.map((exercise) => {
+        if (exercise.id == id) {
+          const newSets = [...exercise.sets];
+          newSets[index] = { reps: newRepsNum, weight: newWeightNum };
+
+          return { ...exercise, sets: newSets };
+        } else {
+          return exercise;
+        }
+      }),
+    }));
+  }
+
   function handleAddSet() {
     setDraft((prev) => ({
       ...prev,
       exercises: prev.exercises.map((exercise) => {
-        if (exercise.exerciseId === exerciseId) {
+        if (exercise.id === id) {
           const newSet = createExerciseSet(newRepsNum, newWeightNum);
 
           const newSets = [...exercise.sets, newSet];
@@ -127,7 +165,7 @@ export default function TemplateEditor({
                 <div>{exercisesList[exercise.exerciseId].name}</div>
 
                 <SetsArea
-                  exerciseId={exercise.exerciseId}
+                  id={exercise.id}
                   sets={exercise.sets}
                   setDraft={setDraft}
                 ></SetsArea>
