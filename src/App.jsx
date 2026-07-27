@@ -14,28 +14,41 @@ import ExerciseList from "./components/ExerciseList";
 import TemplateList from "./components/TemplateList";
 import TemplateEditor from "./components/TemplateEditor";
 
+const TABS = {
+  MUSCLES: "muscles",
+  EXERCISES: "exercises",
+  TEMPLATES: "templates",
+};
+
+const TABS_ARRAY = [
+  { id: TABS.MUSCLES, label: "Músculos" },
+  { id: TABS.EXERCISES, label: "Exercícios" },
+  { id: TABS.TEMPLATES, label: "Templates" },
+];
+
 function App() {
   const [exercisesList, setExercisesList] = useState(getExercises());
   const [musclesList, setMusclesList] = useState(getMuscles());
   const [templatesList, setTemplatesList] = useState(() => getTemplates());
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 
-  if (false) {
-    return (
-      <>
-        <MuscleList
-          musclesList={musclesList}
-          onAddMuscle={handleAddMuscle}
-        ></MuscleList>
-        <ExerciseList
-          exercisesList={exercisesList}
-          musclesList={musclesList}
-          onAddExercise={handleAddExercise}
-        ></ExerciseList>
-      </>
-    );
-  } else {
-    return (
+  const [currentTab, setCurrentTab] = useState(TABS.MUSCLES);
+
+  const RENDERS = {
+    [TABS.MUSCLES]: () => (
+      <MuscleList
+        musclesList={musclesList}
+        onAddMuscle={handleAddMuscle}
+      ></MuscleList>
+    ),
+    [TABS.EXERCISES]: () => (
+      <ExerciseList
+        exercisesList={exercisesList}
+        musclesList={musclesList}
+        onAddExercise={handleAddExercise}
+      ></ExerciseList>
+    ),
+    [TABS.TEMPLATES]: () => (
       <>
         <TemplateList
           templatesList={templatesList}
@@ -52,8 +65,26 @@ function App() {
           ></TemplateEditor>
         )}
       </>
-    );
-  }
+    ),
+  };
+
+  return (
+    <>
+      <nav>
+        {TABS_ARRAY.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setCurrentTab(tab.id)}
+            disabled={tab.id === currentTab}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </nav>
+
+      {RENDERS[currentTab]()}
+    </>
+  );
 
   function handleAddExercise(exerciseName, selectedMuscles) {
     const newExercise = createExercise(exerciseName, [...selectedMuscles]);
