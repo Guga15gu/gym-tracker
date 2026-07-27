@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { createExerciseSet } from "../data/exerciseSet";
+import { createTemplateExercise } from "../data/template";
 
 function SetsArea({ exerciseId, sets, setDraft }) {
   const [newReps, setNewReps] = useState("0");
@@ -49,11 +51,10 @@ function SetsArea({ exerciseId, sets, setDraft }) {
       ...prev,
       exercises: prev.exercises.map((exercise) => {
         if (exercise.exerciseId === exerciseId) {
-          const newSet = [
-            ...exercise.sets,
-            { reps: newRepsNum, weight: newWeightNum },
-          ];
-          return { ...exercise, sets: newSet };
+          const newSet = createExerciseSet(newRepsNum, newWeightNum);
+
+          const newSets = [...exercise.sets, newSet];
+          return { ...exercise, sets: newSets };
         } else {
           return exercise;
         }
@@ -122,7 +123,7 @@ export default function TemplateEditor({
 
           <ul>
             {draft.exercises.map((exercise, index) => (
-              <li key={exercise.exerciseId}>
+              <li key={exercise.id}>
                 <div>{exercisesList[exercise.exerciseId].name}</div>
 
                 <SetsArea
@@ -160,14 +161,10 @@ export default function TemplateEditor({
     setDraft((prev) => {
       const beginArray = prev.exercises.slice(0, position);
       const endArray = prev.exercises.slice(position, prev.exercises.length);
-
+      const newTemplateExercise = createTemplateExercise(exerciseId, []);
       return {
         ...prev,
-        exercises: [
-          ...beginArray,
-          { exerciseId: exerciseId, sets: [] },
-          ...endArray,
-        ],
+        exercises: [...beginArray, newTemplateExercise, ...endArray],
       };
     });
     setIsOpenSelectExercise(false);
