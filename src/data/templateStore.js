@@ -1,4 +1,4 @@
-export { getTemplates, addTemplate };
+export { getTemplates, saveTemplate };
 
 function getTemplates() {
   const templates = localStorage.getItem("templates");
@@ -8,9 +8,11 @@ function getTemplates() {
 
   return JSON.parse(templates);
 }
-function addTemplate(template) {
+
+function saveTemplate(template) {
   const templates = getTemplates();
   templates[template.id] = template;
 
   localStorage.setItem("templates", JSON.stringify(templates));
 }
+

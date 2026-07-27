@@ -6,7 +6,7 @@ import { getMuscles, addMuscle } from "./data/muscleStore";
 import { getExercises, addExercise } from "./data/exerciseStore";
 import { createMuscle } from "./data/muscle";
 import { createExercise } from "./data/exercise";
-import { getTemplates, addTemplate } from "./data/templateStore";
+import { getTemplates, saveTemplate } from "./data/templateStore";
 import { createTemplate } from "./data/template";
 
 import MuscleList from "./components/MuscleList";
@@ -71,7 +71,7 @@ function App() {
 
   function handleAddTemplate(templateName) {
     const newTemplate = createTemplate(templateName, []);
-    addTemplate(newTemplate);
+    saveTemplate(newTemplate);
 
     setTemplatesList((prev) => ({ ...prev, [newTemplate.id]: newTemplate }));
   }
