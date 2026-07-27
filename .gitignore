@@ -24,4 +24,4 @@ dist-ssr
 *.sln
 *.sw?
 
-src/data/manualTest*.js 
+src/data/tests
