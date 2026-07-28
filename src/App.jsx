@@ -13,17 +13,21 @@ import MuscleList from "./components/MuscleList";
 import ExerciseList from "./components/ExerciseList";
 import TemplateList from "./components/TemplateList";
 import TemplateEditor from "./components/TemplateEditor";
+import WorkoutList from "./components/WorkoutList";
+import WorkoutEditor from "./components/WorkoutEditor";
 
 const TABS = {
   MUSCLES: "muscles",
   EXERCISES: "exercises",
   TEMPLATES: "templates",
+  WORKOUTS: "workouts",
 };
 
 const TABS_ARRAY = [
   { id: TABS.MUSCLES, label: "Músculos" },
   { id: TABS.EXERCISES, label: "Exercícios" },
   { id: TABS.TEMPLATES, label: "Templates" },
+  { id: TABS.WORKOUTS, label: "Workouts" },
 ];
 
 function App() {
@@ -31,6 +35,7 @@ function App() {
   const [musclesList, setMusclesList] = useState(getMuscles());
   const [templatesList, setTemplatesList] = useState(() => getTemplates());
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
+  const [workoutDraft, setWorkoutDraft] = useState(null);
 
   const [currentTab, setCurrentTab] = useState(TABS.MUSCLES);
 
@@ -63,6 +68,19 @@ function App() {
             exercisesList={exercisesList}
             onUpdateTemplate={handleUpdateTemplate}
           ></TemplateEditor>
+        )}
+      </>
+    ),
+    [TABS.WORKOUTS]: () => (
+      <>
+        <WorkoutList setWorkoutDraft={setWorkoutDraft}></WorkoutList>
+        {workoutDraft && (
+          <WorkoutEditor
+            workoutDraft={workoutDraft}
+            onSaveWorkoutDraft={setWorkoutDraft}
+            exercisesList={exercisesList}
+            musclesList={musclesList}
+          ></WorkoutEditor>
         )}
       </>
     ),
