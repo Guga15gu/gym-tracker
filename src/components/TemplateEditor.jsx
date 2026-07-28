@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createExerciseSet, isValidSetValue } from "../data/exerciseSet";
 import { createTemplateExercise } from "../data/template";
+import ExerciseModal from "./ExerciseModal";
 
 function SetsArea({ id, sets, setDraft }) {
   const [newReps, setNewReps] = useState("0");
@@ -112,27 +113,6 @@ export default function TemplateEditor({
 
   const exercises = Object.values(exercisesList);
 
-  let exerciseModal = (
-    <div>
-      <dialog open={isOpenSelectExercise}>
-        <button onClick={() => setIsOpenSelectExercise(false)}>fechar</button>
-
-        <div>Seleção de Exercise</div>
-        <ul style={{ overflowY: "auto", maxHeight: "100px" }}>
-          {exercises.map((exercise) => (
-            <li key={exercise.id}>
-              <button
-                onClick={() => handleAddExercise(exerciseIndex, exercise.id)}
-              >
-                {exercise.name}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </dialog>
-    </div>
-  );
-
   let templateForm;
   if (template) {
     templateForm = (
@@ -157,7 +137,12 @@ export default function TemplateEditor({
             Adicionar Exercício
           </button>
 
-          {exerciseModal}
+          <ExerciseModal
+            isOpen={isOpenSelectExercise}
+            onClose={() => setIsOpenSelectExercise(false)}
+            exercises={exercises}
+            onSelect={handleAddExercise}
+          ></ExerciseModal>
 
           <ul>
             {draft.exercises.map((exercise, index) => (
@@ -195,10 +180,13 @@ export default function TemplateEditor({
     </>
   );
 
-  function handleAddExercise(position, exerciseId) {
+  function handleAddExercise(exerciseId) {
     setDraft((prev) => {
-      const beginArray = prev.exercises.slice(0, position);
-      const endArray = prev.exercises.slice(position, prev.exercises.length);
+      const beginArray = prev.exercises.slice(0, exerciseIndex);
+      const endArray = prev.exercises.slice(
+        exerciseIndex,
+        prev.exercises.length,
+      );
       const newTemplateExercise = createTemplateExercise(exerciseId, []);
       return {
         ...prev,
