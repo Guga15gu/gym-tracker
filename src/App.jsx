@@ -15,6 +15,11 @@ import TemplateList from "./components/TemplateList";
 import TemplateEditor from "./components/TemplateEditor";
 import WorkoutList from "./components/WorkoutList";
 import WorkoutEditor from "./components/WorkoutEditor";
+import {
+  getWorkouts,
+  saveWorkout,
+  saveWorkoutDraft,
+} from "./data/workoutStore";
 
 const TABS = {
   MUSCLES: "muscles",
@@ -36,6 +41,7 @@ function App() {
   const [templatesList, setTemplatesList] = useState(() => getTemplates());
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [workoutDraft, setWorkoutDraft] = useState(null);
+  const [workoutList, setWorkoutList] = useState(() => getWorkouts());
 
   const [currentTab, setCurrentTab] = useState(TABS.MUSCLES);
 
@@ -73,13 +79,17 @@ function App() {
     ),
     [TABS.WORKOUTS]: () => (
       <>
-        <WorkoutList setWorkoutDraft={setWorkoutDraft}></WorkoutList>
+        <WorkoutList
+          workoutList={workoutList}
+          onNewWorkout={handleSaveDraft}
+        ></WorkoutList>
         {workoutDraft && (
           <WorkoutEditor
             workoutDraft={workoutDraft}
-            onSaveWorkoutDraft={setWorkoutDraft}
+            onSaveDraft={handleSaveDraft}
             exercisesList={exercisesList}
             musclesList={musclesList}
+            onFinalizeWorkout={handleFinalizeWorkout}
           ></WorkoutEditor>
         )}
       </>
@@ -110,6 +120,17 @@ function App() {
       ))}
     </>
   );
+
+  function handleFinalizeWorkout(newWorkout) {
+    saveWorkout(newWorkout);
+    setWorkoutList((prev) => ({ ...prev, [newWorkout.id]: newWorkout }));
+    setWorkoutDraft(null);
+  }
+
+  function handleSaveDraft(draft) {
+    saveWorkoutDraft(draft);
+    setWorkoutDraft(draft);
+  }
 
   function handleAddExercise(exerciseName, selectedMuscles) {
     const newExercise = createExercise(exerciseName, [...selectedMuscles]);

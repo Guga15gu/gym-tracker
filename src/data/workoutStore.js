@@ -13,3 +13,15 @@ export function saveWorkout(workout) {
 
   localStorage.setItem("workouts", JSON.stringify(workouts));
 }
+
+export function getWorkoutDraft() {
+  const workoutDraft = localStorage.getItem("workoutDraft");
+
+  if (workoutDraft === null) return null;
+
+  return JSON.parse(workoutDraft);
+}
+
+export function saveWorkoutDraft(workoutDraft) {
+  localStorage.setItem("workoutDraft", JSON.stringify(workoutDraft));
+}

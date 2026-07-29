@@ -5,9 +5,10 @@ import SetsArea from "./SetsArea";
 
 export default function WorkoutEditor({
   workoutDraft,
-  onSaveWorkoutDraft,
+  onSaveDraft,
   exercisesList,
   musclesList,
+  onFinalizeWorkout,
 }) {
   const [isExerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [exerciseIndex, setExerciseIndex] = useState(0);
@@ -19,6 +20,7 @@ export default function WorkoutEditor({
     workoutForm = (
       <>
         <div>Name: {workoutDraft.name}</div>
+        <button onClick={handleFinalizeWorkout}>Finalizar workout</button>
         <div>Exercícios:</div>
         <div>
           <button
@@ -71,41 +73,41 @@ export default function WorkoutEditor({
 
   return <div>{workoutForm}</div>;
 
+  function handleFinalizeWorkout() {
+    onFinalizeWorkout(workoutDraft);
+  }
+
   function handleChangeSets(newSets, workoutExerciseId) {
-    onSaveWorkoutDraft((prev) => {
-      return {
-        ...prev,
-        workoutExercises: prev.workoutExercises.map((workoutExercise) => {
-          if (workoutExercise.id === workoutExerciseId) {
-            return { ...workoutExercise, sets: newSets };
-          } else {
-            return workoutExercise;
-          }
-        }),
-      };
+    onSaveDraft({
+      ...workoutDraft,
+      workoutExercises: workoutDraft.workoutExercises.map((workoutExercise) => {
+        if (workoutExercise.id === workoutExerciseId) {
+          return { ...workoutExercise, sets: newSets };
+        } else {
+          return workoutExercise;
+        }
+      }),
     });
   }
 
   function handleAddExercise(exerciseId) {
-    onSaveWorkoutDraft((prev) => {
-      const newMuscles = exercisesList[exerciseId].muscles.map((muscleId) => ({
-        id: muscleId,
-        name: musclesList[muscleId].name,
-      }));
-      const newExercise = createWorkoutExercise(
-        exercisesList[exerciseId].name,
-        exerciseId,
-        newMuscles,
-        [],
-      );
-      const newExercises = [
-        ...prev.workoutExercises.slice(0, exerciseIndex),
-        newExercise,
-        ...prev.workoutExercises.slice(exerciseIndex),
-      ];
+    const newMuscles = exercisesList[exerciseId].muscles.map((muscleId) => ({
+      id: muscleId,
+      name: musclesList[muscleId].name,
+    }));
+    const newExercise = createWorkoutExercise(
+      exercisesList[exerciseId].name,
+      exerciseId,
+      newMuscles,
+      [],
+    );
+    const newExercises = [
+      ...workoutDraft.workoutExercises.slice(0, exerciseIndex),
+      newExercise,
+      ...workoutDraft.workoutExercises.slice(exerciseIndex),
+    ];
 
-      return { ...prev, workoutExercises: newExercises };
-    });
+    onSaveDraft({ ...workoutDraft, workoutExercises: newExercises });
 
     setExerciseModalOpen(false);
   }
