@@ -1,106 +1,7 @@
 import { useState } from "react";
-import { createExerciseSet, isValidSetValue } from "../data/exerciseSet";
 import { createTemplateExercise } from "../data/template";
 import ExerciseModal from "./ExerciseModal";
-
-function SetsArea({ id, sets, setDraft }) {
-  const [newReps, setNewReps] = useState("0");
-  const [newWeight, setNewWeight] = useState("0");
-
-  const newRepsNum = Number(newReps);
-  const newWeightNum = Number(newWeight);
-
-  const disableAddSet =
-    !(Number.isFinite(newRepsNum) && Number.isFinite(newWeightNum)) ||
-    newRepsNum < 0 ||
-    newWeightNum < 0 ||
-    newReps === "" ||
-    newWeight === "";
-
-  return (
-    <div>
-      <div>Sets:</div>
-      <ul>
-        {sets.map((set, index) => (
-          <li key={index}>
-            <input
-              type="number"
-              value={set.reps}
-              style={{ width: "4em" }}
-              onChange={(e) => editSet(index, e.target.value, set.weight)}
-            />
-            reps
-            <input
-              type="number"
-              value={set.weight}
-              style={{ width: "4em" }}
-              onChange={(e) => editSet(index, set.reps, e.target.value)}
-            />
-            weight
-          </li>
-        ))}
-      </ul>
-      <input
-        type="number"
-        value={newReps}
-        onChange={(e) => setNewReps(e.target.value)}
-        style={{ width: "4em" }}
-      />
-      Reps
-      <input
-        type="number"
-        value={newWeight}
-        onChange={(e) => setNewWeight(e.target.value)}
-        style={{ width: "4em" }}
-      />
-      kg
-      <button onClick={handleAddSet} disabled={disableAddSet}>
-        Adicionar set
-      </button>
-    </div>
-  );
-
-  function editSet(index, newReps, newWeight) {
-    const newRepsNum = Number(newReps);
-    const newWeightNum = Number(newWeight);
-
-    if (!isValidSetValue(newRepsNum)) {
-      return;
-    }
-    if (!isValidSetValue(newWeightNum)) {
-      return;
-    }
-    setDraft((prev) => ({
-      ...prev,
-      exercises: prev.exercises.map((exercise) => {
-        if (exercise.id == id) {
-          const newSets = [...exercise.sets];
-          newSets[index] = { reps: newRepsNum, weight: newWeightNum };
-
-          return { ...exercise, sets: newSets };
-        } else {
-          return exercise;
-        }
-      }),
-    }));
-  }
-
-  function handleAddSet() {
-    setDraft((prev) => ({
-      ...prev,
-      exercises: prev.exercises.map((exercise) => {
-        if (exercise.id === id) {
-          const newSet = createExerciseSet(newRepsNum, newWeightNum);
-
-          const newSets = [...exercise.sets, newSet];
-          return { ...exercise, sets: newSets };
-        } else {
-          return exercise;
-        }
-      }),
-    }));
-  }
-}
+import SetsArea from "./SetsArea";
 
 export default function TemplateEditor({
   template,
@@ -150,9 +51,10 @@ export default function TemplateEditor({
                 <div>{exercisesList[exercise.exerciseId].name}</div>
 
                 <SetsArea
-                  id={exercise.id}
                   sets={exercise.sets}
-                  setDraft={setDraft}
+                  onChangeSets={(newSets) =>
+                    handleChangeSets(newSets, exercise.id)
+                  }
                 ></SetsArea>
                 <button
                   onClick={() => {
@@ -179,6 +81,21 @@ export default function TemplateEditor({
       {templateForm}
     </>
   );
+
+  function handleChangeSets(newSets, templateExerciseId) {
+    setDraft((prev) => {
+      return {
+        ...prev,
+        exercises: prev.exercises.map((exercise) => {
+          if (exercise.id === templateExerciseId) {
+            return { ...exercise, sets: newSets };
+          } else {
+            return exercise;
+          }
+        }),
+      };
+    });
+  }
 
   function handleAddExercise(exerciseId) {
     setDraft((prev) => {
