@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ExerciseModal from "./ExerciseModal";
 import { createWorkoutExercise } from "../data/workout";
+import SetsArea from "./SetsArea";
 
 export default function WorkoutEditor({
   workoutDraft,
@@ -42,8 +43,12 @@ export default function WorkoutEditor({
                 <li key={draftExercise.id}>
                   <div>Exercício {draftExercise.name}</div>
                   <div>Muscles</div>
-                  <div>Sets</div>
-                  <button>Novo set</button>
+                  <SetsArea
+                    sets={draftExercise.sets}
+                    onChangeSets={(newSets) =>
+                      handleChangeSets(newSets, draftExercise.id)
+                    }
+                  ></SetsArea>
 
                   <button
                     onClick={() => {
@@ -65,6 +70,21 @@ export default function WorkoutEditor({
   }
 
   return <div>{workoutForm}</div>;
+
+  function handleChangeSets(newSets, workoutExerciseId) {
+    onSaveWorkoutDraft((prev) => {
+      return {
+        ...prev,
+        workoutExercises: prev.workoutExercises.map((workoutExercise) => {
+          if (workoutExercise.id === workoutExerciseId) {
+            return { ...workoutExercise, sets: newSets };
+          } else {
+            return workoutExercise;
+          }
+        }),
+      };
+    });
+  }
 
   function handleAddExercise(exerciseId) {
     onSaveWorkoutDraft((prev) => {
