@@ -16,10 +16,13 @@ import TemplateEditor from "./components/TemplateEditor";
 import WorkoutList from "./components/WorkoutList";
 import WorkoutEditor from "./components/WorkoutEditor";
 import {
+  getWorkoutDraft,
   getWorkouts,
   saveWorkout,
   saveWorkoutDraft,
 } from "./data/workoutStore";
+import WorkoutViewer from "./components/WorkoutViewer";
+import { createWorkout } from "./data/workout";
 
 const TABS = {
   MUSCLES: "muscles",
@@ -35,15 +38,19 @@ const TABS_ARRAY = [
   { id: TABS.WORKOUTS, label: "Workouts" },
 ];
 
+const WORKOUT_VIEWS = { LIST: "list", EDITOR: "editor", VIEWER: "viewer" };
+
 function App() {
   const [exercisesList, setExercisesList] = useState(getExercises());
   const [musclesList, setMusclesList] = useState(getMuscles());
   const [templatesList, setTemplatesList] = useState(() => getTemplates());
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
-  const [workoutDraft, setWorkoutDraft] = useState(null);
+  const [workoutDraft, setWorkoutDraft] = useState(() => getWorkoutDraft());
   const [workoutList, setWorkoutList] = useState(() => getWorkouts());
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState(null);
 
   const [currentTab, setCurrentTab] = useState(TABS.MUSCLES);
+  const [workoutView, setWorkoutView] = useState(WORKOUT_VIEWS.LIST);
 
   const RENDERS = {
     [TABS.MUSCLES]: () => (
@@ -77,23 +84,40 @@ function App() {
         )}
       </>
     ),
-    [TABS.WORKOUTS]: () => (
-      <>
-        <WorkoutList
-          workoutList={workoutList}
-          onNewWorkout={handleSaveDraft}
-        ></WorkoutList>
-        {workoutDraft && (
-          <WorkoutEditor
-            workoutDraft={workoutDraft}
-            onSaveDraft={handleSaveDraft}
-            exercisesList={exercisesList}
-            musclesList={musclesList}
-            onFinalizeWorkout={handleFinalizeWorkout}
-          ></WorkoutEditor>
-        )}
-      </>
-    ),
+    [TABS.WORKOUTS]: () => {
+      switch (workoutView) {
+        case WORKOUT_VIEWS.LIST:
+          return (
+            <WorkoutList
+              workoutList={workoutList}
+              hasDraft={!!workoutDraft}
+              onStartWorkout={handleStartWorkout}
+              onSelectWorkout={handleSelectWorkout}
+            ></WorkoutList>
+          );
+        case WORKOUT_VIEWS.VIEWER:
+          return (
+            <WorkoutViewer
+              workout={workoutList[selectedWorkoutId]}
+              onBack={() => setWorkoutView(WORKOUT_VIEWS.LIST)}
+            ></WorkoutViewer>
+          );
+        case WORKOUT_VIEWS.EDITOR:
+          return (
+            <WorkoutEditor
+              workoutDraft={workoutDraft}
+              exercisesList={exercisesList}
+              musclesList={musclesList}
+              onSaveDraft={handleSaveDraft}
+              onFinalizeWorkout={handleFinalizeWorkout}
+              onDiscardDraft={handleDiscardDraft}
+              onBack={() => setWorkoutView(WORKOUT_VIEWS.LIST)}
+            ></WorkoutEditor>
+          );
+        default:
+          break;
+      }
+    },
   };
 
   return (
@@ -121,10 +145,36 @@ function App() {
     </>
   );
 
-  function handleFinalizeWorkout(newWorkout) {
-    saveWorkout(newWorkout);
-    setWorkoutList((prev) => ({ ...prev, [newWorkout.id]: newWorkout }));
+  function handleSelectWorkout(workoutId) {
+    setSelectedWorkoutId(workoutId);
+    setWorkoutView(WORKOUT_VIEWS.VIEWER);
+  }
+
+  function handleStartWorkout() {
+    if (workoutDraft) {
+      setWorkoutView(WORKOUT_VIEWS.EDITOR);
+    } else {
+      const todayDate = new Date().toISOString().split("T")[0];
+      const name = `Workout ${todayDate}`;
+      const newWorkout = createWorkout(name, []);
+      saveWorkoutDraft(newWorkout);
+      setWorkoutDraft(newWorkout);
+      setWorkoutView(WORKOUT_VIEWS.EDITOR);
+    }
+  }
+
+  function handleFinalizeWorkout() {
+    saveWorkout(workoutDraft);
+    setWorkoutList((prev) => ({ ...prev, [workoutDraft.id]: workoutDraft }));
+    saveWorkoutDraft(null);
     setWorkoutDraft(null);
+    setWorkoutView(WORKOUT_VIEWS.LIST);
+  }
+
+  function handleDiscardDraft() {
+    setWorkoutDraft(null);
+    saveWorkoutDraft(null);
+    setWorkoutView(WORKOUT_VIEWS.LIST);
   }
 
   function handleSaveDraft(draft) {

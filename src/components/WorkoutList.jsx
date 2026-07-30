@@ -1,20 +1,25 @@
-import { createWorkout } from "../data/workout";
-
-export default function WorkoutList({ workoutList, onNewWorkout }) {
+export default function WorkoutList({
+  workoutList,
+  hasDraft,
+  onStartWorkout,
+  onSelectWorkout,
+}) {
   const workouts = Object.values(workoutList);
 
   return (
     <>
-      <h1>Workouts</h1>
+      <h1>Workouts List</h1>
 
-      <button onClick={handleNewWorkout}>Começar novo Workout</button>
+      <button onClick={onStartWorkout}>
+        {hasDraft ? "Retomar workout" : "Começar novo Workout"}
+      </button>
       {workouts.length === 0 ? (
         <div>Sem workouts</div>
       ) : (
         <ul>
           {workouts.map((workout) => (
             <li key={workout.id}>
-              <button>
+              <button onClick={() => onSelectWorkout(workout.id)}>
                 {workout.name} in {workout.timestamp}
               </button>
             </li>
@@ -23,11 +28,4 @@ export default function WorkoutList({ workoutList, onNewWorkout }) {
       )}
     </>
   );
-
-  function handleNewWorkout() {
-    const todayDate = new Date().toISOString().split("T")[0];
-    const name = `Workout ${todayDate}`;
-
-    onNewWorkout(createWorkout(name, []));
-  }
 }
