@@ -2,11 +2,13 @@ import { useState } from "react";
 import ExerciseModal from "./ExerciseModal";
 import { createWorkoutExercise } from "../data/workout";
 import SetsArea from "./SetsArea";
+import { createExerciseSet } from "../data/exerciseSet";
 
 export default function WorkoutEditor({
   workoutDraft,
   exercisesList,
   musclesList,
+  templatesList,
   onSaveDraft,
   onFinalizeWorkout,
   onDiscardDraft,
@@ -15,12 +17,28 @@ export default function WorkoutEditor({
   const [isExerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
 
-  const draftExercises = Object.values(workoutDraft.workoutExercises);
+  const draftExercises = workoutDraft.workoutExercises;
   const exercises = Object.values(exercisesList);
+  const templates = Object.values(templatesList);
 
   return (
     <>
+      <dialog open={showTemplateModal}>
+        <button onClick={() => setShowTemplateModal(false)}>fechar</button>
+        <div>Seleção de Template</div>
+        <ul>
+          {templates.map((template) => (
+            <li key={template.id}>
+              <button onClick={() => handleSelectTemplate(template.id)}>
+                {template.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </dialog>
+
       <div>Name: {workoutDraft.name}</div>
       <div>
         <input
@@ -45,7 +63,10 @@ export default function WorkoutEditor({
       <button onClick={() => setShowDiscardConfirmation(true)}>
         Descartar workout
       </button>
+
       <div>Exercícios:</div>
+      <button onClick={() => setShowTemplateModal(true)}>Usar Template</button>
+
       <div>
         <button
           onClick={() => {
@@ -96,6 +117,27 @@ export default function WorkoutEditor({
       </div>
     </>
   );
+
+  function handleSelectTemplate(templateId) {
+    setShowTemplateModal(false);
+
+    const template = templatesList[templateId];
+
+    const draftExercises = template.exercises.map((templateExercise) => {
+      const exercise = exercisesList[templateExercise.exerciseId];
+      const muscles = exercise.muscles.map((muscleId) => ({
+        id: muscleId,
+        name: musclesList[muscleId].name,
+      }));
+      const sets = templateExercise.sets.map((set) =>
+        createExerciseSet(set.reps, set.weight),
+      );
+
+      return createWorkoutExercise(exercise.name, exercise.id, muscles, sets);
+    });
+
+    onSaveDraft({ ...workoutDraft, workoutExercises: draftExercises });
+  }
 
   function handleDiscard() {
     setExerciseModalOpen(false);

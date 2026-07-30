@@ -109,6 +109,7 @@ function App() {
               workoutDraft={workoutDraft}
               exercisesList={exercisesList}
               musclesList={musclesList}
+              templatesList={templatesList}
               onSaveDraft={handleSaveDraft}
               onFinalizeWorkout={handleFinalizeWorkout}
               onDiscardDraft={handleDiscardDraft}
