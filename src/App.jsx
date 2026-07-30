@@ -91,6 +91,7 @@ function App() {
             <WorkoutList
               workoutList={workoutList}
               hasDraft={!!workoutDraft}
+              selectedWorkoutId={selectedWorkoutId}
               onStartWorkout={handleStartWorkout}
               onSelectWorkout={handleSelectWorkout}
             ></WorkoutList>
@@ -168,6 +169,7 @@ function App() {
     setWorkoutList((prev) => ({ ...prev, [workoutDraft.id]: workoutDraft }));
     saveWorkoutDraft(null);
     setWorkoutDraft(null);
+    setSelectedWorkoutId(workoutDraft.id);
     setWorkoutView(WORKOUT_VIEWS.LIST);
   }
 

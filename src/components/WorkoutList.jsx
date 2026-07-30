@@ -1,6 +1,7 @@
 export default function WorkoutList({
   workoutList,
   hasDraft,
+  selectedWorkoutId,
   onStartWorkout,
   onSelectWorkout,
 }) {
@@ -13,6 +14,17 @@ export default function WorkoutList({
       <button onClick={onStartWorkout}>
         {hasDraft ? "Retomar workout" : "Começar novo Workout"}
       </button>
+
+      {selectedWorkoutId && (
+        <div>
+          <span>Último visto: </span>
+          <button onClick={() => onSelectWorkout(selectedWorkoutId)}>
+            {workoutList[selectedWorkoutId].name} in
+            {workoutList[selectedWorkoutId].timestamp}
+          </button>
+        </div>
+      )}
+
       {workouts.length === 0 ? (
         <div>Sem workouts</div>
       ) : (
@@ -22,6 +34,7 @@ export default function WorkoutList({
               <button onClick={() => onSelectWorkout(workout.id)}>
                 {workout.name} in {workout.timestamp}
               </button>
+              {selectedWorkoutId === workout.id && <span> (Último visto)</span>}
             </li>
           ))}
         </ul>
