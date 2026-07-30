@@ -20,6 +20,14 @@ export default function WorkoutEditor({
   return (
     <>
       <div>Name: {workoutDraft.name}</div>
+      <div>
+        <input
+          value={workoutDraft.name}
+          onChange={(e) =>
+            onSaveDraft({ ...workoutDraft, name: e.target.value })
+          }
+        ></input>
+      </div>
       <button onClick={onBack}>Ver histórico</button>
       <button onClick={onFinalizeWorkout}>Finalizar workout</button>
       <button onClick={onDiscardDraft}>Descartar workout</button>
