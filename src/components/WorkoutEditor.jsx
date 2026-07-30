@@ -14,6 +14,8 @@ export default function WorkoutEditor({
 }) {
   const [isExerciseModalOpen, setExerciseModalOpen] = useState(false);
   const [exerciseIndex, setExerciseIndex] = useState(0);
+  const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
+
   const draftExercises = Object.values(workoutDraft.workoutExercises);
   const exercises = Object.values(exercisesList);
 
@@ -28,9 +30,21 @@ export default function WorkoutEditor({
           }
         ></input>
       </div>
+
+      <dialog open={showDiscardConfirmation}>
+        <button onClick={() => setShowDiscardConfirmation(false)}>
+          fechar
+        </button>
+        <button onClick={handleDiscard}>
+          Confirmar descarte do workout atual
+        </button>
+      </dialog>
+
       <button onClick={onBack}>Ver histórico</button>
       <button onClick={onFinalizeWorkout}>Finalizar workout</button>
-      <button onClick={onDiscardDraft}>Descartar workout</button>
+      <button onClick={() => setShowDiscardConfirmation(true)}>
+        Descartar workout
+      </button>
       <div>Exercícios:</div>
       <div>
         <button
@@ -82,6 +96,11 @@ export default function WorkoutEditor({
       </div>
     </>
   );
+
+  function handleDiscard() {
+    setExerciseModalOpen(false);
+    onDiscardDraft();
+  }
 
   function handleChangeSets(newSets, workoutExerciseId) {
     onSaveDraft({
