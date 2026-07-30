@@ -32,7 +32,8 @@ export default function WorkoutList({
           {workouts.map((workout) => (
             <li key={workout.id}>
               <button onClick={() => onSelectWorkout(workout.id)}>
-                {workout.name} in {workout.timestamp}
+                {workout.name} {"in "}
+                {new Date(workout.timestamp).toLocaleString("pt-BR")}
               </button>
               {selectedWorkoutId === workout.id && <span> (Último visto)</span>}
             </li>
