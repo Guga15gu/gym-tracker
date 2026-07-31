@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { createTemplateExercise } from "../data/template";
-import ExerciseModal from "./ExerciseModal";
-import SetsArea from "./SetsArea";
+import ExercisesArea from "./ExercisesArea";
 
 export default function TemplateEditor({
   template,
@@ -9,10 +8,6 @@ export default function TemplateEditor({
   onUpdateTemplate,
 }) {
   const [draft, setDraft] = useState(() => ({ ...template }));
-  const [isOpenSelectExercise, setIsOpenSelectExercise] = useState(false);
-  const [exerciseIndex, setExerciseIndex] = useState(0);
-
-  const exercises = Object.values(exercisesList);
 
   let templateForm;
   if (template) {
@@ -28,46 +23,12 @@ export default function TemplateEditor({
         </div>
 
         <div>Exercicios:</div>
-        <div>
-          <button
-            onClick={() => {
-              setIsOpenSelectExercise(true);
-              setExerciseIndex(0);
-            }}
-          >
-            Adicionar Exercício
-          </button>
-
-          <ExerciseModal
-            isOpen={isOpenSelectExercise}
-            onClose={() => setIsOpenSelectExercise(false)}
-            exercises={exercises}
-            onSelect={handleAddExercise}
-          ></ExerciseModal>
-
-          <ul>
-            {draft.exercises.map((exercise, index) => (
-              <li key={exercise.id}>
-                <div>{exercisesList[exercise.exerciseId].name}</div>
-
-                <SetsArea
-                  sets={exercise.sets}
-                  onChangeSets={(newSets) =>
-                    handleChangeSets(newSets, exercise.id)
-                  }
-                ></SetsArea>
-                <button
-                  onClick={() => {
-                    setExerciseIndex(index + 1);
-                    setIsOpenSelectExercise(true);
-                  }}
-                >
-                  Adicionar Exercício {index + 1}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ExercisesArea
+          exercises={draft.exercises}
+          exercisesList={exercisesList}
+          onAddExercise={handleAddExercise}
+          onChangeExercises={handleChangeExercises}
+        ></ExercisesArea>
       </>
     );
   } else {
@@ -82,22 +43,16 @@ export default function TemplateEditor({
     </>
   );
 
-  function handleChangeSets(newSets, templateExerciseId) {
+  function handleChangeExercises(newExercises) {
     setDraft((prev) => {
       return {
         ...prev,
-        exercises: prev.exercises.map((exercise) => {
-          if (exercise.id === templateExerciseId) {
-            return { ...exercise, sets: newSets };
-          } else {
-            return exercise;
-          }
-        }),
+        exercises: newExercises,
       };
     });
   }
 
-  function handleAddExercise(exerciseId) {
+  function handleAddExercise(exerciseId, exerciseIndex) {
     setDraft((prev) => {
       const beginArray = prev.exercises.slice(0, exerciseIndex);
       const endArray = prev.exercises.slice(
@@ -110,6 +65,5 @@ export default function TemplateEditor({
         exercises: [...beginArray, newTemplateExercise, ...endArray],
       };
     });
-    setIsOpenSelectExercise(false);
   }
 }

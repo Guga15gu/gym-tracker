@@ -20,7 +20,6 @@ export default function WorkoutEditor({
   const [showTemplateModal, setShowTemplateModal] = useState(false);
 
   const draftExercises = workoutDraft.workoutExercises;
-  const exercises = Object.values(exercisesList);
   const templates = Object.values(templatesList);
 
   return (
@@ -78,7 +77,7 @@ export default function WorkoutEditor({
         <ExerciseModal
           isOpen={isExerciseModalOpen}
           onClose={() => setExerciseModalOpen(false)}
-          exercises={exercises}
+          exercisesList={exercisesList}
           onSelect={handleAddExercise}
         ></ExerciseModal>
 

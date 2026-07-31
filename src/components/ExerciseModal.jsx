@@ -1,9 +1,11 @@
 export default function ExerciseModal({
   isOpen,
   onClose,
-  exercises,
+  exercisesList,
   onSelect,
 }) {
+  const exercises = Object.values(exercisesList);
+
   return (
     <dialog open={isOpen}>
       <button onClick={() => onClose()}>fechar</button>
