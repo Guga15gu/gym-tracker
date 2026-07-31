@@ -1,8 +1,7 @@
 import { useState } from "react";
-import ExerciseModal from "./ExerciseModal";
 import { createWorkoutExercise } from "../data/workout";
-import SetsArea from "./SetsArea";
 import { createExerciseSet } from "../data/exerciseSet";
+import ExercisesArea from "./ExercisesArea";
 
 export default function WorkoutEditor({
   workoutDraft,
@@ -14,8 +13,6 @@ export default function WorkoutEditor({
   onDiscardDraft,
   onBack,
 }) {
-  const [isExerciseModalOpen, setExerciseModalOpen] = useState(false);
-  const [exerciseIndex, setExerciseIndex] = useState(0);
   const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
 
@@ -66,54 +63,12 @@ export default function WorkoutEditor({
       <div>Exercícios:</div>
       <button onClick={() => setShowTemplateModal(true)}>Usar Template</button>
 
-      <div>
-        <button
-          onClick={() => {
-            setExerciseModalOpen(true);
-          }}
-        >
-          Adicionar Exercício
-        </button>
-        <ExerciseModal
-          isOpen={isExerciseModalOpen}
-          onClose={() => setExerciseModalOpen(false)}
-          exercisesList={exercisesList}
-          onSelect={handleAddExercise}
-        ></ExerciseModal>
-
-        {draftExercises.length === 0 ? (
-          <div>Sem exercícios no workoutDraft</div>
-        ) : (
-          <ul>
-            {draftExercises.map((draftExercise, index) => (
-              <li key={draftExercise.id}>
-                <div>Exercício {draftExercise.name}</div>
-                <div>
-                  Muscles:{" "}
-                  {draftExercise.muscles
-                    .map((muscle) => muscle.name)
-                    .join(", ")}
-                </div>
-                <SetsArea
-                  sets={draftExercise.sets}
-                  onChangeSets={(newSets) =>
-                    handleChangeSets(newSets, draftExercise.id)
-                  }
-                ></SetsArea>
-
-                <button
-                  onClick={() => {
-                    setExerciseIndex(index + 1);
-                    setExerciseModalOpen(true);
-                  }}
-                >
-                  Adicionar Exercício {index + 1}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <ExercisesArea
+        exercises={draftExercises}
+        exercisesList={exercisesList}
+        onAddExercise={handleAddExercise}
+        onChangeExercises={handleChangeExercises}
+      ></ExercisesArea>
     </>
   );
 
@@ -139,24 +94,17 @@ export default function WorkoutEditor({
   }
 
   function handleDiscard() {
-    setExerciseModalOpen(false);
     onDiscardDraft();
   }
 
-  function handleChangeSets(newSets, workoutExerciseId) {
+  function handleChangeExercises(newExercises) {
     onSaveDraft({
       ...workoutDraft,
-      workoutExercises: workoutDraft.workoutExercises.map((workoutExercise) => {
-        if (workoutExercise.id === workoutExerciseId) {
-          return { ...workoutExercise, sets: newSets };
-        } else {
-          return workoutExercise;
-        }
-      }),
+      workoutExercises: newExercises,
     });
   }
 
-  function handleAddExercise(exerciseId) {
+  function handleAddExercise(exerciseId, exerciseIndex) {
     const newMuscles = exercisesList[exerciseId].muscles.map((muscleId) => ({
       id: muscleId,
       name: musclesList[muscleId].name,
@@ -174,7 +122,5 @@ export default function WorkoutEditor({
     ];
 
     onSaveDraft({ ...workoutDraft, workoutExercises: newExercises });
-
-    setExerciseModalOpen(false);
   }
 }
