@@ -31,6 +31,7 @@ export default function TemplateEditor({
             );
             return {
               ...exercise,
+              name: exercisesList[exercise.exerciseId].name,
               muscles: muscles,
             };
           })}

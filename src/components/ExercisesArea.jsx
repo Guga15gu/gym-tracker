@@ -35,7 +35,7 @@ export default function ExercisesArea({
       <ul>
         {exercises.map((exercise, index) => (
           <li key={exercise.id}>
-            <div>{exercisesList[exercise.exerciseId].name}</div>
+            <div>{exercise.name}</div>
             <div>
               Muscles:{" "}
               {exercise.muscles.map((muscle) => muscle.name).join(", ")}
