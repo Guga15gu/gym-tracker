@@ -37,6 +37,7 @@ export default function SetsArea({ sets, onChangeSets }) {
               onChange={(e) => handleEditSet(set.id, set.reps, e.target.value)}
             />
             weight
+            <button onClick={() => handleDeleteSet(set.id)}>Delete</button>
           </li>
         ))}
       </ul>
@@ -59,6 +60,10 @@ export default function SetsArea({ sets, onChangeSets }) {
       </button>
     </div>
   );
+
+  function handleDeleteSet(setId) {
+    onChangeSets(sets.filter((set) => set.id !== setId));
+  }
 
   function handleEditSet(setId, repsStr, weightStr) {
     const newRepsNum = Number(repsStr);
