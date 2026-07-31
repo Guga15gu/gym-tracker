@@ -35,6 +35,11 @@ export default function ExercisesArea({
       <ul>
         {exercises.map((exercise, index) => (
           <li key={exercise.id}>
+            {index !== 0 && (
+              <button onClick={() => handleMove(index - 1, index)}>
+                Mover para cima
+              </button>
+            )}
             <div>{exercise.name}</div>
             <div>
               Muscles:{" "}
@@ -44,6 +49,13 @@ export default function ExercisesArea({
               sets={exercise.sets}
               onChangeSets={(newSets) => handleChangeSets(newSets, exercise.id)}
             ></SetsArea>
+
+            {index !== exercises.length - 1 && (
+              <button onClick={() => handleMove(index, index + 1)}>
+                Mover para baixo
+              </button>
+            )}
+
             <button
               onClick={() => {
                 setExerciseIndex(index + 1);
@@ -57,6 +69,18 @@ export default function ExercisesArea({
       </ul>
     </>
   );
+
+  function handleMove(index, index2) {
+    const leftExercises = exercises.slice(0, index);
+    const rightExercises = exercises.slice(index2 + 1);
+
+    onChangeExercises([
+      ...leftExercises,
+      exercises[index2],
+      exercises[index],
+      ...rightExercises,
+    ]);
+  }
 
   function handleChangeSets(newSets, exerciseId) {
     const newExercises = exercises.map((exercise) => {
