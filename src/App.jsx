@@ -79,6 +79,7 @@ function App() {
             key={selectedTemplateId}
             template={templatesList[selectedTemplateId]}
             exercisesList={exercisesList}
+            musclesList={musclesList}
             onUpdateTemplate={handleUpdateTemplate}
           ></TemplateEditor>
         )}

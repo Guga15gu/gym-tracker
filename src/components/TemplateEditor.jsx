@@ -5,6 +5,7 @@ import ExercisesArea from "./ExercisesArea";
 export default function TemplateEditor({
   template,
   exercisesList,
+  musclesList,
   onUpdateTemplate,
 }) {
   const [draft, setDraft] = useState(() => ({ ...template }));
@@ -24,7 +25,15 @@ export default function TemplateEditor({
 
         <div>Exercicios:</div>
         <ExercisesArea
-          exercises={draft.exercises}
+          exercises={draft.exercises.map((exercise) => {
+            const muscles = exercisesList[exercise.exerciseId].muscles.map(
+              (muscleId) => musclesList[muscleId],
+            );
+            return {
+              ...exercise,
+              muscles: muscles,
+            };
+          })}
           exercisesList={exercisesList}
           onAddExercise={handleAddExercise}
           onChangeExercises={handleChangeExercises}
@@ -47,7 +56,11 @@ export default function TemplateEditor({
     setDraft((prev) => {
       return {
         ...prev,
-        exercises: newExercises,
+        exercises: newExercises.map(({ id, exerciseId, sets }) => ({
+          id,
+          exerciseId,
+          sets,
+        })),
       };
     });
   }
