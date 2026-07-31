@@ -1,5 +1,6 @@
 /**
  * @typedef {Object} ExerciseSet
+ * @property {string} id
  * @property {number} reps
  * @property {number} weight
  */
@@ -24,5 +25,5 @@ export function createExerciseSet(reps, weight) {
     throw new Error("weight is not a non-negative finite number");
   }
 
-  return { reps, weight };
+  return { id: crypto.randomUUID(), reps, weight };
 }

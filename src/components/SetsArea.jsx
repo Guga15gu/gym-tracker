@@ -19,20 +19,22 @@ export default function SetsArea({ sets, onChangeSets }) {
     <div>
       <div>Sets:</div>
       <ul>
-        {sets.map((set, index) => (
-          <li key={index}>
+        {sets.map((set) => (
+          <li key={set.id}>
             <input
               type="number"
               value={set.reps}
               style={{ width: "4em" }}
-              onChange={(e) => handleEditSet(index, e.target.value, set.weight)}
+              onChange={(e) =>
+                handleEditSet(set.id, e.target.value, set.weight)
+              }
             />
             reps
             <input
               type="number"
               value={set.weight}
               style={{ width: "4em" }}
-              onChange={(e) => handleEditSet(index, set.reps, e.target.value)}
+              onChange={(e) => handleEditSet(set.id, set.reps, e.target.value)}
             />
             weight
           </li>
@@ -58,7 +60,7 @@ export default function SetsArea({ sets, onChangeSets }) {
     </div>
   );
 
-  function handleEditSet(index, repsStr, weightStr) {
+  function handleEditSet(setId, repsStr, weightStr) {
     const newRepsNum = Number(repsStr);
     const newWeightNum = Number(weightStr);
 
@@ -69,9 +71,15 @@ export default function SetsArea({ sets, onChangeSets }) {
       return;
     }
 
-    const newSets = [...sets];
-    newSets[index] = { reps: newRepsNum, weight: newWeightNum };
-    onChangeSets(newSets);
+    onChangeSets(
+      sets.map((set) => {
+        if (set.id === setId) {
+          return { ...set, reps: newRepsNum, weight: newWeightNum };
+        } else {
+          return set;
+        }
+      }),
+    );
   }
 
   function handleAddSet() {
