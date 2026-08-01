@@ -1,9 +1,9 @@
 export default function WorkoutViewer({ workout, onBack }) {
   return (
     <>
-      <h1>Workout Viewer</h1>
+      <h2>Workout Viewer</h2>
       <button onClick={onBack}>Voltar para histórico</button>
-      <h2>{workout.name}</h2>
+      <h3>{workout.name}</h3>
 
       <div>{new Date(workout.timestamp).toLocaleString("pt-BR")}</div>
 

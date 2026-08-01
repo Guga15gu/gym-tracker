@@ -11,7 +11,7 @@ export default function TemplateList({
   const trimmedTemplateName = templateName.trim();
   return (
     <>
-      <div>Templates: </div>
+      <h2>Templates: </h2>
       <form onSubmit={handleAddTemplate}>
         <input
           value={templateName}

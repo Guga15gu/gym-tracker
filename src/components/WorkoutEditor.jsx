@@ -35,7 +35,7 @@ export default function WorkoutEditor({
         </ul>
       </dialog>
 
-      <div>Name: {workoutDraft.name}</div>
+      <h2>Name: {workoutDraft.name}</h2>
       <div>
         <input
           value={workoutDraft.name}

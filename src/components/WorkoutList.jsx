@@ -9,7 +9,7 @@ export default function WorkoutList({
 
   return (
     <>
-      <h1>Workouts List</h1>
+      <h2>Workouts List</h2>
 
       <button onClick={onStartWorkout}>
         {hasDraft ? "Retomar workout" : "Começar novo Workout"}

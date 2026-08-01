@@ -47,7 +47,7 @@ export default function TemplateEditor({
 
   return (
     <>
-      <div>Template Editor: {draft.name}</div>
+      <h2>Template Editor: {draft.name}</h2>
       <button onClick={() => onUpdateTemplate(draft)}>Salvar Template</button>
       {templateForm}
     </>

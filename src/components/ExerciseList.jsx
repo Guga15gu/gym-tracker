@@ -65,7 +65,7 @@ export default function ExerciseList({
 
   return (
     <>
-      <div>Lista de Exercícios</div>
+      <h2>Lista de Exercícios</h2>
 
       <button onClick={handleShowMuscles}>
         {showMuscles ? "Esconder músculos" : "Mostrar músculos"}

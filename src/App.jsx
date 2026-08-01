@@ -125,6 +125,7 @@ function App() {
 
   return (
     <>
+      <h1>Gym-Tracker</h1>
       <nav>
         {TABS_ARRAY.map((tab) => (
           <button

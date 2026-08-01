@@ -37,7 +37,7 @@ export default function MuscleList({ musclesList, onAddMuscle }) {
 
   return (
     <>
-      <div>Músculos</div>
+      <h2>Músculos</h2>
 
       <form onSubmit={handleAddMuscle}>
         <input
