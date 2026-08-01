@@ -16,48 +16,50 @@ export default function SetsArea({ sets, onChangeSets }) {
     newWeight === "";
 
   return (
-    <div>
-      <div>Sets:</div>
+    <div className="sets-area">
       <ul>
         {sets.map((set) => (
-          <li key={set.id}>
+          <li key={set.id} className="set-item">
             <input
               type="number"
               value={set.reps}
-              style={{ width: "4em" }}
               onChange={(e) =>
                 handleEditSet(set.id, e.target.value, set.weight)
               }
             />
-            reps
+            <div>reps</div>
             <input
               type="number"
               value={set.weight}
-              style={{ width: "4em" }}
               onChange={(e) => handleEditSet(set.id, set.reps, e.target.value)}
             />
-            weight
-            <button onClick={() => handleDeleteSet(set.id)}>Delete</button>
+            <div>kg</div>
+            <button
+              onClick={() => handleDeleteSet(set.id)}
+              className="set-delete"
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
-      <input
-        type="number"
-        value={newReps}
-        onChange={(e) => setNewReps(e.target.value)}
-        style={{ width: "4em" }}
-      />
-      Reps
-      <input
-        type="number"
-        value={newWeight}
-        onChange={(e) => setNewWeight(e.target.value)}
-        style={{ width: "4em" }}
-      />
-      kg
-      <button onClick={handleAddSet} disabled={disableAddSet}>
-        Adicionar set
-      </button>
+      <div className="set-item set-add">
+        <input
+          type="number"
+          value={newReps}
+          onChange={(e) => setNewReps(e.target.value)}
+        />
+        <div>reps</div>
+        <input
+          type="number"
+          value={newWeight}
+          onChange={(e) => setNewWeight(e.target.value)}
+        />
+        <div>kg</div>
+        <button onClick={handleAddSet} disabled={disableAddSet}>
+          Adicionar
+        </button>
+      </div>
     </div>
   );
 
