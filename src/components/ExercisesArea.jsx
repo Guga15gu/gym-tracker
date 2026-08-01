@@ -56,6 +56,9 @@ export default function ExercisesArea({
               </button>
             )}
 
+            <button onClick={() => handleDeleteExercise(exercise.id)}>
+              Deletar exercício
+            </button>
             <button
               onClick={() => {
                 setExerciseIndex(index + 1);
@@ -69,6 +72,12 @@ export default function ExercisesArea({
       </ul>
     </>
   );
+
+  function handleDeleteExercise(exerciseId) {
+    onChangeExercises(
+      exercises.filter((exercise) => exercise.id !== exerciseId),
+    );
+  }
 
   function handleMove(index, index2) {
     const leftExercises = exercises.slice(0, index);
