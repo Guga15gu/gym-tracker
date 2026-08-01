@@ -32,9 +32,9 @@ export default function ExercisesArea({
         }}
       ></ExerciseModal>
 
-      <ul>
+      <ul className="exercise-list">
         {exercises.map((exercise, index) => (
-          <li key={exercise.id}>
+          <li key={exercise.id} className="exercise-item">
             {index !== 0 && (
               <button onClick={() => handleMove(index - 1, index)}>
                 Mover para cima
