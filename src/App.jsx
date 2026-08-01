@@ -139,8 +139,8 @@ function App() {
 
       {TABS_ARRAY.map((tab) => (
         <div
+          className={`tab-panel${tab.id !== currentTab ? " hidden" : ""}`}
           key={tab.id}
-          style={{ display: tab.id === currentTab ? "block" : "none" }}
         >
           {RENDERS[tab.id]()}
         </div>

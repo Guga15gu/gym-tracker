@@ -4,3 +4,6 @@ nav {
 nav button {
   flex: 1;
 }
+.tab-panel.hidden {
+  display: none;
+}
