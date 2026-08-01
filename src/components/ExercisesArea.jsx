@@ -35,11 +35,13 @@ export default function ExercisesArea({
       <ul className="exercise-list">
         {exercises.map((exercise, index) => (
           <li key={exercise.id} className="exercise-item">
-            <h3>{exercise.name}</h3>
-            <div>
-              Muscles:{" "}
-              {exercise.muscles.map((muscle) => muscle.name).join(", ")}
+            <div className="exercise-description">
+              <h3>{exercise.name}</h3>
+              <div className="muscles-item">
+                {exercise.muscles.map((muscle) => muscle.name).join(", ")}
+              </div>
             </div>
+
             <SetsArea
               sets={exercise.sets}
               onChangeSets={(newSets) => handleChangeSets(newSets, exercise.id)}
