@@ -35,11 +35,6 @@ export default function ExercisesArea({
       <ul className="exercise-list">
         {exercises.map((exercise, index) => (
           <li key={exercise.id} className="exercise-item">
-            {index !== 0 && (
-              <button onClick={() => handleMove(index - 1, index)}>
-                Mover para cima
-              </button>
-            )}
             <div>{exercise.name}</div>
             <div>
               Muscles:{" "}
@@ -50,23 +45,36 @@ export default function ExercisesArea({
               onChangeSets={(newSets) => handleChangeSets(newSets, exercise.id)}
             ></SetsArea>
 
-            {index !== exercises.length - 1 && (
-              <button onClick={() => handleMove(index, index + 1)}>
-                Mover para baixo
-              </button>
-            )}
-
-            <button onClick={() => handleDeleteExercise(exercise.id)}>
-              Deletar exercício
-            </button>
-            <button
-              onClick={() => {
-                setExerciseIndex(index + 1);
-                setIsOpenSelectExercise(true);
-              }}
-            >
-              Adicionar Exercício {index + 1}
-            </button>
+            <div className="exercise-actions">
+              <div>
+                <button
+                  onClick={() => {
+                    setExerciseIndex(index + 1);
+                    setIsOpenSelectExercise(true);
+                  }}
+                >
+                  Adicionar Exercício {index + 1}
+                </button>
+                <button
+                  onClick={() => handleDeleteExercise(exercise.id)}
+                  className="exercise-delete"
+                >
+                  Deletar exercício
+                </button>
+              </div>
+              <div className="exercise-reorder">
+                {index !== 0 && (
+                  <button onClick={() => handleMove(index - 1, index)}>
+                    Mover para cima
+                  </button>
+                )}
+                {index !== exercises.length - 1 && (
+                  <button onClick={() => handleMove(index, index + 1)}>
+                    Mover para baixo
+                  </button>
+                )}
+              </div>
+            </div>
           </li>
         ))}
       </ul>

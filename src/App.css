@@ -21,3 +21,17 @@ nav button {
   padding: 0.5rem;
   background-color: #dadada;
 }
+.exercise-actions {
+  display: flex;
+  justify-content: space-between;
+}
+.exercise-actions > div {
+  display: flex;
+  gap: 0.2rem;
+}
+.exercise-reorder {
+  flex-direction: column;
+}
+.exercise-delete {
+  background-color: #fee2e2;
+}
