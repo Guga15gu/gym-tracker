@@ -1,24 +1,24 @@
-/**
- * @typedef {Object} TemplateExercise
- * @property {string} id - UUID
- * @property {string} exerciseId - UUID
- * @property {import("./exerciseSet.js").ExerciseSet[]} sets
- */
-/**
- * @typedef {Object} Template
- * @property {string} id - UUID
- * @property {string} name - trimmed name
- * @property {TemplateExercise[]} exercises
- */
+import type { ExerciseSet } from "./exerciseSet";
+
+export type Template = {
+  id: string;
+  name: string;
+  exercises: TemplateExercise[];
+};
+export type TemplateExercise = {
+  id: string;
+  exerciseId: string;
+  sets: ExerciseSet[];
+};
 
 /**
- * @param {string} exerciseId
- * @param {import("./exerciseSet.js").ExerciseSet[]} sets
- * @returns {TemplateExercise}
  * @throws {Error} if exerciseId is not string
  * @throws {Error} if sets is not array
  */
-export function createTemplateExercise(exerciseId, sets) {
+export function createTemplateExercise(
+  exerciseId: string,
+  sets: ExerciseSet[],
+): TemplateExercise {
   if (typeof exerciseId !== "string") {
     throw new Error("exerciseId is not string");
   }
@@ -31,13 +31,13 @@ export function createTemplateExercise(exerciseId, sets) {
 }
 
 /**
- * @param {string} name
- * @param {TemplateExercise[]} exercises
- * @returns {Template}
  * @throws {Error} if name is not string or empty
  * @throws {Error} if exercises is not a array
  */
-export function createTemplate(name, exercises) {
+export function createTemplate(
+  name: string,
+  exercises: TemplateExercise[],
+): Template {
   if (typeof name !== "string") {
     throw new Error("Name is not string");
   }
