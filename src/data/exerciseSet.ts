@@ -1,23 +1,14 @@
-/**
- * @typedef {Object} ExerciseSet
- * @property {string} id
- * @property {number} reps
- * @property {number} weight
- */
+export type ExerciseSet = { id: string; reps: number; weight: number };
 
-export function isValidSetValue(value) {
+export function isValidSetValue(value: number): boolean {
   return Number.isFinite(value) && value >= 0;
 }
 
 /**
- * @param {number} reps
- * @param {number} weight
- * @returns {ExerciseSet}
  * @throws {Error} if reps is not a non-negative finite number
  * @throws {Error} if weight is not a non-negative finite number
-
  */
-export function createExerciseSet(reps, weight) {
+export function createExerciseSet(reps: number, weight: number): ExerciseSet {
   if (!isValidSetValue(reps)) {
     throw new Error("reps is not a non-negative finite number");
   }
