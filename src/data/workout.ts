@@ -1,24 +1,33 @@
-/**
- * @typedef {Object} WorkoutExercise
- * @property {string} id
- * @property {string} name
- * @property {string} exerciseId
- * @property {import("./muscle.js").Muscle[]} muscles
- * @property {import("./exerciseSet").ExerciseSet[]} sets
- */
+import type { ExerciseSet } from "./exerciseSet";
+import type { Muscle } from "./muscle";
+
+export type Workout = {
+  id: string;
+  name: string;
+  timestamp: number;
+  workoutExercises: WorkoutExercise[];
+};
+
+export type WorkoutExercise = {
+  id: string;
+  name: string;
+  exerciseId: string;
+  muscles: Muscle[];
+  sets: ExerciseSet[];
+};
 
 /**
- * @param {string} name
- * @param {string} exerciseId - UUID
- * @param {import("./muscle.js").Muscle[]} muscles
- * @param {import("./exerciseSet").ExerciseSet[]} sets
- * @returns {WorkoutExercise}
  * @throws {Error} if name is not string
  * @throws {Error} if exerciseId is not string
  * @throws {Error} if muscles is not array
  * @throws {Error} if sets is not array
  */
-export function createWorkoutExercise(name, exerciseId, muscles, sets) {
+export function createWorkoutExercise(
+  name: string,
+  exerciseId: string,
+  muscles: Muscle[],
+  sets: ExerciseSet[],
+): WorkoutExercise {
   if (typeof name !== "string") {
     throw new Error("Name is not string");
   }
@@ -42,21 +51,13 @@ export function createWorkoutExercise(name, exerciseId, muscles, sets) {
 }
 
 /**
- * @typedef {Object} Workout
- * @property {string} id
- * @property {string} name
- * @property {number} timestamp
- * @property {WorkoutExercise[]} workoutExercises
- */
-
-/**
- * @param {string} name
- * @param {WorkoutExercise[]} workoutExercises
- * @returns {Workout}
  * @throws {Error} if name is not string
  * @throws {Error} if workoutExercises is not array
  */
-export function createWorkout(name, workoutExercises) {
+export function createWorkout(
+  name: string,
+  workoutExercises: WorkoutExercise[],
+): Workout {
   if (typeof name !== "string") {
     throw new Error("Name is not string");
   }
