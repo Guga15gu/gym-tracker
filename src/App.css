@@ -27,6 +27,7 @@ nav button {
 .exercise-actions {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
 }
 .exercise-actions > div {
   display: flex;
@@ -75,4 +76,37 @@ h3 {
 }
 .set-delete {
   background-color: #fee2e2;
+}
+.workout-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.workout-name {
+  font-size: 2rem;
+  min-width: 0;
+  font-weight: bold;
+  flex: 1;
+  background: transparent;
+}
+.workout-delete {
+  background-color: #fee2e2;
+}
+.workout-back {
+  align-self: flex-end;
+}
+.workout-lifecycle {
+  display: flex;
+  justify-content: space-between;
+}
+.workout-exercises {
+  display: flex;
+  flex-direction: column;
+}
+.exercise-area {
+  display: flex;
+  flex-direction: column;
+}
+.exercise-add button {
+  width: 100%;
 }

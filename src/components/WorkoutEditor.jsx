@@ -35,16 +35,6 @@ export default function WorkoutEditor({
         </ul>
       </dialog>
 
-      <h2>Name: {workoutDraft.name}</h2>
-      <div>
-        <input
-          value={workoutDraft.name}
-          onChange={(e) =>
-            onSaveDraft({ ...workoutDraft, name: e.target.value })
-          }
-        ></input>
-      </div>
-
       <dialog open={showDiscardConfirmation}>
         <button onClick={() => setShowDiscardConfirmation(false)}>
           fechar
@@ -54,21 +44,42 @@ export default function WorkoutEditor({
         </button>
       </dialog>
 
-      <button onClick={onBack}>Ver histórico</button>
-      <button onClick={onFinalizeWorkout}>Finalizar workout</button>
-      <button onClick={() => setShowDiscardConfirmation(true)}>
-        Descartar workout
-      </button>
+      <div className="workout-header">
+        <input
+          className="workout-name"
+          value={workoutDraft.name}
+          onChange={(e) =>
+            onSaveDraft({ ...workoutDraft, name: e.target.value })
+          }
+        ></input>
+        <button onClick={onBack} className="workout-back">
+          Ver histórico
+        </button>
+      </div>
 
-      <div>Exercícios:</div>
-      <button onClick={() => setShowTemplateModal(true)}>Usar Template</button>
+      <div className="workout-lifecycle">
+        <button onClick={onFinalizeWorkout}>Finalizar workout</button>
+        <button
+          onClick={() => setShowDiscardConfirmation(true)}
+          className="workout-delete"
+        >
+          Descartar workout
+        </button>
+      </div>
 
-      <ExercisesArea
-        exercises={draftExercises}
-        exercisesList={exercisesList}
-        onAddExercise={handleAddExercise}
-        onChangeExercises={handleChangeExercises}
-      ></ExercisesArea>
+      <div className="workout-exercises">
+        <div>Exercícios:</div>
+        <button onClick={() => setShowTemplateModal(true)}>
+          Substituir tudo por Template
+        </button>
+
+        <ExercisesArea
+          exercises={draftExercises}
+          exercisesList={exercisesList}
+          onAddExercise={handleAddExercise}
+          onChangeExercises={handleChangeExercises}
+        ></ExercisesArea>
+      </div>
     </>
   );
 

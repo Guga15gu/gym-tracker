@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import SetsArea from "./SetsArea";
 import ExerciseModal from "./ExerciseModal";
 
@@ -12,7 +12,7 @@ export default function ExercisesArea({
   const [exerciseIndex, setExerciseIndex] = useState(0);
 
   return (
-    <>
+    <div className="exercise-area">
       <button
         onClick={() => {
           setIsOpenSelectExercise(true);
@@ -34,53 +34,59 @@ export default function ExercisesArea({
 
       <ul className="exercise-list">
         {exercises.map((exercise, index) => (
-          <li key={exercise.id} className="exercise-item">
-            <div className="exercise-description">
-              <h3>{exercise.name}</h3>
-              <div className="muscles-item">
-                {exercise.muscles.map((muscle) => muscle.name).join(", ")}
+          <Fragment key={exercise.id}>
+            <li className="exercise-item">
+              <div className="exercise-description">
+                <h3>{exercise.name}</h3>
+                <div className="muscles-item">
+                  {exercise.muscles.map((muscle) => muscle.name).join(", ")}
+                </div>
               </div>
-            </div>
 
-            <SetsArea
-              sets={exercise.sets}
-              onChangeSets={(newSets) => handleChangeSets(newSets, exercise.id)}
-            ></SetsArea>
+              <SetsArea
+                sets={exercise.sets}
+                onChangeSets={(newSets) =>
+                  handleChangeSets(newSets, exercise.id)
+                }
+              ></SetsArea>
 
-            <div className="exercise-actions">
-              <div>
-                <button
-                  onClick={() => {
-                    setExerciseIndex(index + 1);
-                    setIsOpenSelectExercise(true);
-                  }}
-                >
-                  Adicionar Exercício {index + 1}
-                </button>
-                <button
-                  onClick={() => handleDeleteExercise(exercise.id)}
-                  className="exercise-delete"
-                >
-                  Deletar exercício
-                </button>
-              </div>
-              <div className="exercise-reorder">
-                {index !== 0 && (
-                  <button onClick={() => handleMove(index - 1, index)}>
-                    Mover para cima
+              <div className="exercise-actions">
+                <div className="exercise-reorder">
+                  {index !== 0 && (
+                    <button onClick={() => handleMove(index - 1, index)}>
+                      Mover para cima
+                    </button>
+                  )}
+                  {index !== exercises.length - 1 && (
+                    <button onClick={() => handleMove(index, index + 1)}>
+                      Mover para baixo
+                    </button>
+                  )}
+                </div>
+                <div>
+                  <button
+                    onClick={() => handleDeleteExercise(exercise.id)}
+                    className="exercise-delete"
+                  >
+                    Deletar exercício
                   </button>
-                )}
-                {index !== exercises.length - 1 && (
-                  <button onClick={() => handleMove(index, index + 1)}>
-                    Mover para baixo
-                  </button>
-                )}
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
+            <li className="exercise-add">
+              <button
+                onClick={() => {
+                  setExerciseIndex(index + 1);
+                  setIsOpenSelectExercise(true);
+                }}
+              >
+                Adicionar Exercício {index + 1}
+              </button>
+            </li>
+          </Fragment>
         ))}
       </ul>
-    </>
+    </div>
   );
 
   function handleDeleteExercise(exerciseId) {
