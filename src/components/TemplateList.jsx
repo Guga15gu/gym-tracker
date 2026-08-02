@@ -4,6 +4,7 @@ export default function TemplateList({
   templatesList,
   onAddTemplate,
   onSelectTemplate,
+  onDeleteTemplate,
 }) {
   const [templateName, setTemplateName] = useState("");
   const templates = Object.values(templatesList);
@@ -31,6 +32,9 @@ export default function TemplateList({
               <li key={template.id}>
                 <button onClick={() => handleTemplateClick(template.id)}>
                   {template.name}
+                </button>
+                <button onClick={() => onDeleteTemplate(template.id)}>
+                  Deletar
                 </button>
               </li>
             );

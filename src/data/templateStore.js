@@ -1,4 +1,4 @@
-export { getTemplates, saveTemplate };
+export { getTemplates, saveTemplate, deleteTemplate };
 
 function getTemplates() {
   const templates = localStorage.getItem("templates");
@@ -16,3 +16,8 @@ function saveTemplate(template) {
   localStorage.setItem("templates", JSON.stringify(templates));
 }
 
+function deleteTemplate(templateId) {
+  const { [templateId]: deleted, ...rest } = getTemplates();
+
+  localStorage.setItem("templates", JSON.stringify(rest));
+}

@@ -6,7 +6,11 @@ import { getMuscles, addMuscle } from "./data/muscleStore";
 import { getExercises, addExercise } from "./data/exerciseStore";
 import { createMuscle } from "./data/muscle";
 import { createExercise } from "./data/exercise";
-import { getTemplates, saveTemplate } from "./data/templateStore";
+import {
+  deleteTemplate,
+  getTemplates,
+  saveTemplate,
+} from "./data/templateStore";
 import { createTemplate } from "./data/template";
 
 import MuscleList from "./components/MuscleList";
@@ -72,6 +76,7 @@ function App() {
           templatesList={templatesList}
           onAddTemplate={handleAddTemplate}
           onSelectTemplate={handleSelectTemplate}
+          onDeleteTemplate={handleDeleteTemplate}
         ></TemplateList>
 
         {selectedTemplateId && (
@@ -148,6 +153,18 @@ function App() {
       ))}
     </>
   );
+
+  function handleDeleteTemplate(templateId) {
+    if (templateId === selectedTemplateId) {
+      setSelectedTemplateId(null);
+    }
+
+    setTemplatesList((prev) => {
+      const { [templateId]: deleted, ...rest } = prev;
+      return rest;
+    });
+    deleteTemplate(templateId);
+  }
 
   function handleSelectWorkout(workoutId) {
     setSelectedWorkoutId(workoutId);
