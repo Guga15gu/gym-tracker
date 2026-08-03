@@ -1,10 +1,19 @@
+import type { Workout } from "../data/workout";
+
+type WorkoutListProps = {
+  workoutList: Record<string, Workout>;
+  hasDraft: boolean;
+  selectedWorkoutId: string;
+  onStartWorkout: () => void;
+  onSelectWorkout: (workoutId: string) => void;
+};
 export default function WorkoutList({
   workoutList,
   hasDraft,
   selectedWorkoutId,
   onStartWorkout,
   onSelectWorkout,
-}) {
+}: WorkoutListProps) {
   const workouts = Object.values(workoutList);
 
   return (
