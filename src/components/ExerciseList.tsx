@@ -1,13 +1,22 @@
-import { useState } from "react";
+import { useState, type SubmitEvent } from "react";
+import type { Exercise } from "../data/exercise";
+import { Muscle } from "../data/muscle";
 
+type ExerciseListProps = {
+  exercisesList: Record<string, Exercise>;
+  musclesList: Record<string, Muscle>;
+  onAddExercise: (name: string, selectedMuscles: Set<string>) => void;
+};
 export default function ExerciseList({
   exercisesList,
   musclesList,
   onAddExercise,
-}) {
+}: ExerciseListProps) {
   const [showMuscles, setShowMuscles] = useState(false);
   const [exerciseName, setExerciseName] = useState("");
-  const [selectedMuscles, setSelectedMuscles] = useState(new Set());
+  const [selectedMuscles, setSelectedMuscles] = useState<Set<string>>(
+    new Set(),
+  );
   const [showMuscleSelect, setShowMuscleSelect] = useState(false);
 
   const exercises = Object.values(exercisesList);
@@ -117,7 +126,7 @@ export default function ExerciseList({
     setShowMuscles((show) => !show);
   }
 
-  function handleAddExercise(e) {
+  function handleAddExercise(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     onAddExercise(trimmedExerciseName, selectedMuscles);
@@ -130,7 +139,7 @@ export default function ExerciseList({
     setShowMuscleSelect((show) => !show);
   }
 
-  function handleSelectMusle(muscleId) {
+  function handleSelectMusle(muscleId: string) {
     const newSelectedMuscles = new Set(selectedMuscles);
 
     if (newSelectedMuscles.has(muscleId)) {
