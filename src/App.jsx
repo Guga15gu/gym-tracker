@@ -24,6 +24,7 @@ import {
   getWorkouts,
   saveWorkout,
   saveWorkoutDraft,
+  clearWorkoutDraft,
 } from "./data/workoutStore";
 import WorkoutViewer from "./components/WorkoutViewer";
 import { createWorkout } from "./data/workout";
@@ -187,7 +188,7 @@ function App() {
   function handleFinalizeWorkout() {
     saveWorkout(workoutDraft);
     setWorkoutList((prev) => ({ ...prev, [workoutDraft.id]: workoutDraft }));
-    saveWorkoutDraft(null);
+    clearWorkoutDraft();
     setWorkoutDraft(null);
     setSelectedWorkoutId(workoutDraft.id);
     setWorkoutView(WORKOUT_VIEWS.LIST);
@@ -195,7 +196,7 @@ function App() {
 
   function handleDiscardDraft() {
     setWorkoutDraft(null);
-    saveWorkoutDraft(null);
+    clearWorkoutDraft();
     setWorkoutView(WORKOUT_VIEWS.LIST);
   }
 

@@ -24,6 +24,10 @@ export function getWorkoutDraft(): Workout | null {
   return JSON.parse(workoutDraft) as Workout;
 }
 
-export function saveWorkoutDraft(workoutDraft: Workout | null): void {
+export function saveWorkoutDraft(workoutDraft: Workout): void {
   localStorage.setItem("workoutDraft", JSON.stringify(workoutDraft));
+}
+
+export function clearWorkoutDraft(): void {
+  localStorage.removeItem("workoutDraft");
 }
