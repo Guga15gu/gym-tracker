@@ -1,13 +1,22 @@
 import { Fragment, useState } from "react";
 import SetsArea from "./SetsArea";
 import ExerciseModal from "./ExerciseModal";
+import type { WorkoutExercise } from "../data/workout";
+import type { Exercise } from "../data/exercise";
+import type { ExerciseSet } from "../data/exerciseSet";
 
+type ExercisesAreaProps = {
+  exercises: WorkoutExercise[];
+  exercisesList: Record<string, Exercise>;
+  onAddExercise: (exerciseId: string, exerciseIndex: number) => void;
+  onChangeExercises: (exercises: WorkoutExercise[]) => void;
+};
 export default function ExercisesArea({
   exercises,
   exercisesList,
   onAddExercise,
   onChangeExercises,
-}) {
+}: ExercisesAreaProps) {
   const [isOpenSelectExercise, setIsOpenSelectExercise] = useState(false);
   const [exerciseIndex, setExerciseIndex] = useState(0);
 
@@ -89,13 +98,13 @@ export default function ExercisesArea({
     </div>
   );
 
-  function handleDeleteExercise(exerciseId) {
+  function handleDeleteExercise(exerciseId: string) {
     onChangeExercises(
       exercises.filter((exercise) => exercise.id !== exerciseId),
     );
   }
 
-  function handleMove(index, index2) {
+  function handleMove(index: number, index2: number) {
     const leftExercises = exercises.slice(0, index);
     const rightExercises = exercises.slice(index2 + 1);
 
@@ -107,7 +116,7 @@ export default function ExercisesArea({
     ]);
   }
 
-  function handleChangeSets(newSets, exerciseId) {
+  function handleChangeSets(newSets: ExerciseSet[], exerciseId: string) {
     const newExercises = exercises.map((exercise) => {
       if (exercise.id === exerciseId) {
         return { ...exercise, sets: newSets };
