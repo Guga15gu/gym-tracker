@@ -1,6 +1,14 @@
-import { useState } from "react";
+import { useState, type SubmitEvent } from "react";
+import type { Muscle } from "../data/muscle";
 
-export default function MuscleList({ musclesList, onAddMuscle }) {
+type MuscleListProps = {
+  musclesList: Record<string, Muscle>;
+  onAddMuscle: (muscleName: string) => void;
+};
+export default function MuscleList({
+  musclesList,
+  onAddMuscle,
+}: MuscleListProps) {
   const [muscleName, setMuscleName] = useState("");
 
   const muscles = Object.values(musclesList);
@@ -14,7 +22,7 @@ export default function MuscleList({ musclesList, onAddMuscle }) {
     return muscle.name.toLowerCase().startsWith(muscleQuery);
   });
 
-  function handleAddMuscle(e) {
+  function handleAddMuscle(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     onAddMuscle(muscleName);
     setMuscleName("");
