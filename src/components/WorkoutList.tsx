@@ -3,7 +3,7 @@ import type { Workout } from "../data/workout";
 type WorkoutListProps = {
   workoutList: Record<string, Workout>;
   hasDraft: boolean;
-  selectedWorkoutId: string;
+  selectedWorkoutId: string | null;
   onStartWorkout: () => void;
   onSelectWorkout: (workoutId: string) => void;
 };
