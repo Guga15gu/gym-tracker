@@ -1,7 +1,15 @@
 import { useState } from "react";
-import { createExerciseSet, isValidSetValue } from "../data/exerciseSet";
+import {
+  createExerciseSet,
+  type ExerciseSet,
+  isValidSetValue,
+} from "../data/exerciseSet";
 
-export default function SetsArea({ sets, onChangeSets }) {
+type SetsAreaProps = {
+  sets: ExerciseSet[];
+  onChangeSets: (sets: ExerciseSet[]) => void;
+};
+export default function SetsArea({ sets, onChangeSets }: SetsAreaProps) {
   const [newReps, setNewReps] = useState("0");
   const [newWeight, setNewWeight] = useState("0");
 
@@ -24,14 +32,16 @@ export default function SetsArea({ sets, onChangeSets }) {
               type="number"
               value={set.reps}
               onChange={(e) =>
-                handleEditSet(set.id, e.target.value, set.weight)
+                handleEditSet(set.id, e.target.value, String(set.weight))
               }
             />
             <div>reps</div>
             <input
               type="number"
               value={set.weight}
-              onChange={(e) => handleEditSet(set.id, set.reps, e.target.value)}
+              onChange={(e) =>
+                handleEditSet(set.id, String(set.reps), e.target.value)
+              }
             />
             <div>kg</div>
             <button
@@ -63,11 +73,11 @@ export default function SetsArea({ sets, onChangeSets }) {
     </div>
   );
 
-  function handleDeleteSet(setId) {
+  function handleDeleteSet(setId: string) {
     onChangeSets(sets.filter((set) => set.id !== setId));
   }
 
-  function handleEditSet(setId, repsStr, weightStr) {
+  function handleEditSet(setId: string, repsStr: string, weightStr: string) {
     const newRepsNum = Number(repsStr);
     const newWeightNum = Number(weightStr);
 
