@@ -1,6 +1,6 @@
 import { useState, type SubmitEvent } from "react";
 import type { Exercise } from "../data/exercise";
-import { Muscle } from "../data/muscle";
+import type { Muscle } from "../data/muscle";
 
 type ExerciseListProps = {
   exercisesList: Record<string, Exercise>;
