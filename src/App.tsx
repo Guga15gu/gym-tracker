@@ -11,7 +11,7 @@ import {
   getTemplates,
   saveTemplate,
 } from "./data/templateStore";
-import { createTemplate } from "./data/template";
+import { createTemplate, type Template } from "./data/template";
 
 import MuscleList from "./components/MuscleList";
 import ExerciseList from "./components/ExerciseList";
@@ -27,7 +27,7 @@ import {
   clearWorkoutDraft,
 } from "./data/workoutStore";
 import WorkoutViewer from "./components/WorkoutViewer";
-import { createWorkout } from "./data/workout";
+import { createWorkout, type Workout } from "./data/workout";
 
 const TABS = {
   MUSCLES: "muscles",
@@ -49,10 +49,14 @@ function App() {
   const [exercisesList, setExercisesList] = useState(getExercises());
   const [musclesList, setMusclesList] = useState(getMuscles());
   const [templatesList, setTemplatesList] = useState(() => getTemplates());
-  const [selectedTemplateId, setSelectedTemplateId] = useState(null);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+    null,
+  );
   const [workoutDraft, setWorkoutDraft] = useState(() => getWorkoutDraft());
   const [workoutList, setWorkoutList] = useState(() => getWorkouts());
-  const [selectedWorkoutId, setSelectedWorkoutId] = useState(null);
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(
+    null,
+  );
 
   const [currentTab, setCurrentTab] = useState(TABS.MUSCLES);
   const [workoutView, setWorkoutView] = useState(WORKOUT_VIEWS.LIST);
@@ -104,6 +108,8 @@ function App() {
             ></WorkoutList>
           );
         case WORKOUT_VIEWS.VIEWER:
+          if (!selectedWorkoutId) return;
+
           return (
             <WorkoutViewer
               workout={workoutList[selectedWorkoutId]}
@@ -111,6 +117,8 @@ function App() {
             ></WorkoutViewer>
           );
         case WORKOUT_VIEWS.EDITOR:
+          if (!workoutDraft) return;
+
           return (
             <WorkoutEditor
               workoutDraft={workoutDraft}
@@ -155,7 +163,7 @@ function App() {
     </>
   );
 
-  function handleDeleteTemplate(templateId) {
+  function handleDeleteTemplate(templateId: string) {
     if (templateId === selectedTemplateId) {
       setSelectedTemplateId(null);
     }
@@ -167,7 +175,7 @@ function App() {
     deleteTemplate(templateId);
   }
 
-  function handleSelectWorkout(workoutId) {
+  function handleSelectWorkout(workoutId: string) {
     setSelectedWorkoutId(workoutId);
     setWorkoutView(WORKOUT_VIEWS.VIEWER);
   }
@@ -186,6 +194,8 @@ function App() {
   }
 
   function handleFinalizeWorkout() {
+    if (!workoutDraft) return;
+
     saveWorkout(workoutDraft);
     setWorkoutList((prev) => ({ ...prev, [workoutDraft.id]: workoutDraft }));
     clearWorkoutDraft();
@@ -200,26 +210,29 @@ function App() {
     setWorkoutView(WORKOUT_VIEWS.LIST);
   }
 
-  function handleSaveDraft(draft) {
+  function handleSaveDraft(draft: Workout) {
     saveWorkoutDraft(draft);
     setWorkoutDraft(draft);
   }
 
-  function handleAddExercise(exerciseName, selectedMuscles) {
+  function handleAddExercise(
+    exerciseName: string,
+    selectedMuscles: Set<string>,
+  ) {
     const newExercise = createExercise(exerciseName, [...selectedMuscles]);
 
     addExercise(newExercise);
     setExercisesList((prev) => ({ ...prev, [newExercise.id]: newExercise }));
   }
 
-  function handleAddMuscle(muscleName) {
+  function handleAddMuscle(muscleName: string) {
     const newMuscle = createMuscle(muscleName);
 
     addMuscle(newMuscle);
     setMusclesList((prev) => ({ ...prev, [newMuscle.id]: newMuscle }));
   }
 
-  function handleAddTemplate(templateName) {
+  function handleAddTemplate(templateName: string) {
     const newTemplate = createTemplate(templateName, []);
     saveTemplate(newTemplate);
 
@@ -227,11 +240,11 @@ function App() {
     setSelectedTemplateId(newTemplate.id);
   }
 
-  function handleSelectTemplate(templateId) {
+  function handleSelectTemplate(templateId: string) {
     setSelectedTemplateId(templateId);
   }
 
-  function handleUpdateTemplate(updatedTemplate) {
+  function handleUpdateTemplate(updatedTemplate: Template) {
     saveTemplate(updatedTemplate);
 
     setTemplatesList((prev) => ({
