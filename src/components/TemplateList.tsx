@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useState, type SubmitEvent } from "react";
+import type { Template } from "../data/template";
 
+type TemplateListProps = {
+  templatesList: Record<string, Template>;
+  onAddTemplate: (name: string) => void;
+  onSelectTemplate: (templateId: string) => void;
+  onDeleteTemplate: (templateId: string) => void;
+};
 export default function TemplateList({
   templatesList,
   onAddTemplate,
   onSelectTemplate,
   onDeleteTemplate,
-}) {
+}: TemplateListProps) {
   const [templateName, setTemplateName] = useState("");
   const templates = Object.values(templatesList);
 
@@ -44,7 +51,7 @@ export default function TemplateList({
     </>
   );
 
-  function handleAddTemplate(e) {
+  function handleAddTemplate(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (trimmedTemplateName === "") return;
@@ -53,7 +60,7 @@ export default function TemplateList({
     setTemplateName("");
   }
 
-  function handleTemplateClick(templateId) {
+  function handleTemplateClick(templateId: string) {
     onSelectTemplate(templateId);
   }
 }
