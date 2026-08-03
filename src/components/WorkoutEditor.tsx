@@ -1,8 +1,25 @@
 import { useState } from "react";
-import { createWorkoutExercise } from "../data/workout";
+import {
+  createWorkoutExercise,
+  type WorkoutExercise,
+  type Workout,
+} from "../data/workout";
 import { createExerciseSet } from "../data/exerciseSet";
 import ExercisesArea from "./ExercisesArea";
+import type { Exercise } from "../data/exercise";
+import type { Muscle } from "../data/muscle";
+import type { Template } from "../data/template";
 
+type WorkoutEditorProps = {
+  workoutDraft: Workout;
+  exercisesList: Record<string, Exercise>;
+  musclesList: Record<string, Muscle>;
+  templatesList: Record<string, Template>;
+  onSaveDraft: (draft: Workout) => void;
+  onFinalizeWorkout: () => void;
+  onDiscardDraft: () => void;
+  onBack: () => void;
+};
 export default function WorkoutEditor({
   workoutDraft,
   exercisesList,
@@ -12,7 +29,7 @@ export default function WorkoutEditor({
   onFinalizeWorkout,
   onDiscardDraft,
   onBack,
-}) {
+}: WorkoutEditorProps) {
   const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
 
@@ -83,7 +100,7 @@ export default function WorkoutEditor({
     </>
   );
 
-  function handleSelectTemplate(templateId) {
+  function handleSelectTemplate(templateId: string) {
     setShowTemplateModal(false);
 
     const template = templatesList[templateId];
@@ -108,14 +125,14 @@ export default function WorkoutEditor({
     onDiscardDraft();
   }
 
-  function handleChangeExercises(newExercises) {
+  function handleChangeExercises(newExercises: WorkoutExercise[]) {
     onSaveDraft({
       ...workoutDraft,
       workoutExercises: newExercises,
     });
   }
 
-  function handleAddExercise(exerciseId, exerciseIndex) {
+  function handleAddExercise(exerciseId: string, exerciseIndex: number) {
     const newMuscles = exercisesList[exerciseId].muscles.map((muscleId) => ({
       id: muscleId,
       name: musclesList[muscleId].name,
