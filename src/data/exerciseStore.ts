@@ -1,14 +1,14 @@
-export { getExercises, addExercise };
+import type { Exercise } from "./exercise";
 
-function getExercises() {
+export function getExercises(): Record<string, Exercise> {
   const exercises = localStorage.getItem("exercises");
   if (exercises === null) {
     return {};
   }
 
-  return JSON.parse(exercises);
+  return JSON.parse(exercises) as Record<string, Exercise>;
 }
-function addExercise(exercise) {
+export function addExercise(exercise: Exercise): void {
   const exercises = getExercises();
   exercises[exercise.id] = exercise;
 

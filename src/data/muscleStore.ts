@@ -1,14 +1,15 @@
-export { getMuscles, addMuscle };
+import type { Muscle } from "./muscle";
 
-function getMuscles() {
+export function getMuscles(): Record<string, Muscle> {
   const muscles = localStorage.getItem("muscles");
   if (muscles === null) {
     return {};
   }
 
-  return JSON.parse(muscles);
+  return JSON.parse(muscles) as Record<string, Muscle>;
 }
-function addMuscle(muscle) {
+
+export function addMuscle(muscle: Muscle): void {
   const muscles = getMuscles();
   muscles[muscle.id] = muscle;
 
