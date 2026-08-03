@@ -1,13 +1,25 @@
 import { useState } from "react";
-import { createTemplateExercise } from "../data/template";
+import {
+  createTemplateExercise,
+  type TemplateExercise,
+  type Template,
+} from "../data/template";
 import ExercisesArea from "./ExercisesArea";
+import type { Exercise } from "../data/exercise";
+import type { Muscle } from "../data/muscle";
 
+type TemplateEditorProps = {
+  template: Template;
+  exercisesList: Record<string, Exercise>;
+  musclesList: Record<string, Muscle>;
+  onUpdateTemplate: (template: Template) => void;
+};
 export default function TemplateEditor({
   template,
   exercisesList,
   musclesList,
   onUpdateTemplate,
-}) {
+}: TemplateEditorProps) {
   const [draft, setDraft] = useState(() => ({ ...template }));
 
   let templateForm;
@@ -53,7 +65,7 @@ export default function TemplateEditor({
     </>
   );
 
-  function handleChangeExercises(newExercises) {
+  function handleChangeExercises(newExercises: TemplateExercise[]) {
     setDraft((prev) => {
       return {
         ...prev,
@@ -66,7 +78,7 @@ export default function TemplateEditor({
     });
   }
 
-  function handleAddExercise(exerciseId, exerciseIndex) {
+  function handleAddExercise(exerciseId: string, exerciseIndex: number) {
     setDraft((prev) => {
       const beginArray = prev.exercises.slice(0, exerciseIndex);
       const endArray = prev.exercises.slice(
