@@ -1,4 +1,10 @@
-export default function WorkoutViewer({ workout, onBack }) {
+import type { Workout } from "../data/workout";
+
+type WorkoutViewerProps = {
+  workout: Workout;
+  onBack: () => void;
+};
+export default function WorkoutViewer({ workout, onBack }: WorkoutViewerProps) {
   return (
     <>
       <h2>Workout Viewer</h2>
