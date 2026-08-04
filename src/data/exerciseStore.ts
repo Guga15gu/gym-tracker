@@ -14,3 +14,8 @@ export function addExercise(exercise: Exercise): void {
 
   localStorage.setItem("exercises", JSON.stringify(exercises));
 }
+
+export function deleteExercise(exerciseId: string): void {
+  const { [exerciseId]: deleted, ...rest } = getExercises();
+  localStorage.setItem("exercises", JSON.stringify(rest));
+}

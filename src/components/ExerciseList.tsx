@@ -5,12 +5,16 @@ import type { Muscle } from "../data/muscle";
 type ExerciseListProps = {
   exercisesList: Record<string, Exercise>;
   musclesList: Record<string, Muscle>;
+  usedExerciseIds: Set<string>;
   onAddExercise: (name: string, selectedMuscles: Set<string>) => void;
+  onDeleteExercise: (exerciseId: string) => void;
 };
 export default function ExerciseList({
   exercisesList,
   musclesList,
+  usedExerciseIds,
   onAddExercise,
+  onDeleteExercise,
 }: ExerciseListProps) {
   const [showMuscles, setShowMuscles] = useState(false);
   const [exerciseName, setExerciseName] = useState("");
@@ -62,8 +66,15 @@ export default function ExerciseList({
           {exercisesToUi.map((exercise) => (
             <li key={exercise.id}>
               <div>
-                <strong>{exercise.name}</strong>
+                <strong>{exercise.name} </strong>
+                <button
+                  onClick={() => onDeleteExercise(exercise.id)}
+                  disabled={usedExerciseIds.has(exercise.id)}
+                >
+                  Delete
+                </button>
               </div>
+
               {showMuscles && <div>{exercise.muscles.join(", ")}</div>}
             </li>
           ))}

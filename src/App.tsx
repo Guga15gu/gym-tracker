@@ -3,7 +3,11 @@ import "./App.css";
 import { useState } from "react";
 
 import { getMuscles, addMuscle, deleteMuscle } from "./data/muscleStore";
-import { getExercises, addExercise } from "./data/exerciseStore";
+import {
+  getExercises,
+  addExercise,
+  deleteExercise,
+} from "./data/exerciseStore";
 import { createMuscle } from "./data/muscle";
 import { createExercise } from "./data/exercise";
 import {
@@ -69,6 +73,23 @@ function App() {
     }
   }
 
+  const usedExerciseIds = new Set<string>();
+  for (const template of Object.values(templatesList)) {
+    for (const exercise of template.exercises) {
+      usedExerciseIds.add(exercise.exerciseId);
+    }
+  }
+  for (const workout of Object.values(workoutList)) {
+    for (const workoutExercise of workout.workoutExercises) {
+      usedExerciseIds.add(workoutExercise.exerciseId);
+    }
+  }
+  if (workoutDraft) {
+    for (const workoutExercise of workoutDraft.workoutExercises) {
+      usedExerciseIds.add(workoutExercise.exerciseId);
+    }
+  }
+
   const isEmpty =
     Object.keys(musclesList).length === 0 &&
     Object.keys(exercisesList).length === 0 &&
@@ -89,7 +110,9 @@ function App() {
       <ExerciseList
         exercisesList={exercisesList}
         musclesList={musclesList}
+        usedExerciseIds={usedExerciseIds}
         onAddExercise={handleAddExercise}
+        onDeleteExercise={handleDeleteExercise}
       ></ExerciseList>
     ),
     [TABS.TEMPLATES]: () => (
@@ -181,6 +204,18 @@ function App() {
       ))}
     </>
   );
+
+  function handleDeleteExercise(exerciseId: string) {
+    if (usedExerciseIds.has(exerciseId)) {
+      return;
+    }
+
+    setExercisesList((prev) => {
+      const { [exerciseId]: deleted, ...rest } = prev;
+      return rest;
+    });
+    deleteExercise(exerciseId);
+  }
 
   function handleDeleteMuscle(muscleId: string) {
     if (usedMuscleIds.has(muscleId)) {
