@@ -4,7 +4,8 @@ import type { Muscle } from "./muscle";
 export type Workout = {
   id: string;
   name: string;
-  timestamp: number;
+  startedAt: number;
+  endedAt: number | null;
   workoutExercises: WorkoutExercise[];
 };
 
@@ -68,7 +69,8 @@ export function createWorkout(
   return {
     id: crypto.randomUUID(),
     name: name.trim(),
-    timestamp: Date.now(),
+    startedAt: Date.now(),
+    endedAt: null,
     workoutExercises: workoutExercises,
   };
 }
