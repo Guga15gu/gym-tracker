@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createWorkoutExercise, type WorkoutExercise } from "../data/workout";
 import { createExerciseSet } from "../data/exerciseSet";
 import ExercisesArea from "./ExercisesArea";
@@ -6,6 +6,7 @@ import type { Exercise } from "../data/exercise";
 import type { Muscle } from "../data/muscle";
 import type { Template } from "../data/template";
 import type { Draft } from "../data/draft";
+import { formatDuration } from "../utils/formatDuration";
 
 type WorkoutEditorProps = {
   draft: Draft;
@@ -29,12 +30,22 @@ export default function WorkoutEditor({
 }: WorkoutEditorProps) {
   const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [timeNow, setTimeNow] = useState(() => Date.now());
 
   const draftExercises = draft.workoutExercises;
   const templates = Object.values(templatesList);
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimeNow(() => Date.now());
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <>
+      <div>Tempo total: {formatDuration(timeNow - draft.startedAt)}</div>
+
       <dialog open={showTemplateModal}>
         <button onClick={() => setShowTemplateModal(false)}>fechar</button>
         <div>Seleção de Template</div>
