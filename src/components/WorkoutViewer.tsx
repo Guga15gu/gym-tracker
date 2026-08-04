@@ -1,4 +1,5 @@
 import type { Workout } from "../data/workout";
+import { formatDuration } from "../utils/formatDuration";
 
 type WorkoutViewerProps = {
   workout: Workout;
@@ -14,6 +15,9 @@ export default function WorkoutViewer({ workout, onBack }: WorkoutViewerProps) {
       <h3>{workout.name}</h3>
 
       <div>{startedAt.toLocaleString("pt-BR")}</div>
+      <div>
+        Tempo total: {formatDuration(workout.endedAt - workout.startedAt)}
+      </div>
 
       <ul>
         {workout.workoutExercises.map((workoutExercise) => (
