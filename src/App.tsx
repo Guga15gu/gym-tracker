@@ -46,8 +46,8 @@ const TABS_ARRAY = [
 const WORKOUT_VIEWS = { LIST: "list", EDITOR: "editor", VIEWER: "viewer" };
 
 function App() {
-  const [exercisesList, setExercisesList] = useState(getExercises());
-  const [musclesList, setMusclesList] = useState(getMuscles());
+  const [exercisesList, setExercisesList] = useState(() => getExercises());
+  const [musclesList, setMusclesList] = useState(() => getMuscles());
   const [templatesList, setTemplatesList] = useState(() => getTemplates());
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
     null,
