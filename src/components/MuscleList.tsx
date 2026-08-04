@@ -3,11 +3,15 @@ import type { Muscle } from "../data/muscle";
 
 type MuscleListProps = {
   musclesList: Record<string, Muscle>;
+  usedMuscleIds: Set<string>;
   onAddMuscle: (muscleName: string) => void;
+  onDeleteMuscle: (muscleId: string) => void;
 };
 export default function MuscleList({
   musclesList,
+  usedMuscleIds,
   onAddMuscle,
+  onDeleteMuscle,
 }: MuscleListProps) {
   const [muscleName, setMuscleName] = useState("");
 
@@ -37,7 +41,15 @@ export default function MuscleList({
     listContent = (
       <ul>
         {filteredMuscles.map((muscle) => (
-          <li key={muscle.id}>{muscle.name}</li>
+          <li key={muscle.id}>
+            {muscle.name}{" "}
+            <button
+              onClick={() => onDeleteMuscle(muscle.id)}
+              disabled={usedMuscleIds.has(muscle.id)}
+            >
+              Delete
+            </button>
+          </li>
         ))}
       </ul>
     );

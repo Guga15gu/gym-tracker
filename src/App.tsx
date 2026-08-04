@@ -2,7 +2,7 @@ import "./App.css";
 
 import { useState } from "react";
 
-import { getMuscles, addMuscle } from "./data/muscleStore";
+import { getMuscles, addMuscle, deleteMuscle } from "./data/muscleStore";
 import { getExercises, addExercise } from "./data/exerciseStore";
 import { createMuscle } from "./data/muscle";
 import { createExercise } from "./data/exercise";
@@ -62,6 +62,13 @@ function App() {
   const [currentTab, setCurrentTab] = useState(TABS.MUSCLES);
   const [workoutView, setWorkoutView] = useState(WORKOUT_VIEWS.LIST);
 
+  const usedMuscleIds = new Set<string>();
+  for (const exercise of Object.values(exercisesList)) {
+    for (const muscleId of exercise.muscles) {
+      usedMuscleIds.add(muscleId);
+    }
+  }
+
   const isEmpty =
     Object.keys(musclesList).length === 0 &&
     Object.keys(exercisesList).length === 0 &&
@@ -73,7 +80,9 @@ function App() {
     [TABS.MUSCLES]: () => (
       <MuscleList
         musclesList={musclesList}
+        usedMuscleIds={usedMuscleIds}
         onAddMuscle={handleAddMuscle}
+        onDeleteMuscle={handleDeleteMuscle}
       ></MuscleList>
     ),
     [TABS.EXERCISES]: () => (
@@ -172,6 +181,18 @@ function App() {
       ))}
     </>
   );
+
+  function handleDeleteMuscle(muscleId: string) {
+    if (usedMuscleIds.has(muscleId)) {
+      return;
+    }
+
+    setMusclesList((prev) => {
+      const { [muscleId]: deleted, ...rest } = prev;
+      return rest;
+    });
+    deleteMuscle(muscleId);
+  }
 
   function handleSeed() {
     seed();

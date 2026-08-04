@@ -15,3 +15,8 @@ export function addMuscle(muscle: Muscle): void {
 
   localStorage.setItem("muscles", JSON.stringify(muscles));
 }
+
+export function deleteMuscle(muscleId: string): void {
+  const { [muscleId]: deleted, ...rest } = getMuscles();
+  localStorage.setItem("muscles", JSON.stringify(rest));
+}
