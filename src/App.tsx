@@ -23,16 +23,12 @@ import TemplateList from "./components/TemplateList";
 import TemplateEditor from "./components/TemplateEditor";
 import WorkoutList from "./components/WorkoutList";
 import WorkoutEditor from "./components/WorkoutEditor";
-import {
-  getWorkoutDraft,
-  getWorkouts,
-  saveWorkout,
-  saveWorkoutDraft,
-  clearWorkoutDraft,
-} from "./data/workoutStore";
+import { getWorkouts, saveWorkout } from "./data/workoutStore";
 import WorkoutViewer from "./components/WorkoutViewer";
-import { createWorkout, type Workout } from "./data/workout";
 import { seed } from "./data/seed";
+import { createDraft, type Draft } from "./data/draft";
+import { createWorkout } from "./data/workout";
+import { getDraft, saveDraft, clearDraft } from "./data/draftStore";
 
 const TABS = {
   MUSCLES: "muscles",
@@ -57,7 +53,7 @@ function App() {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
     null,
   );
-  const [workoutDraft, setWorkoutDraft] = useState(() => getWorkoutDraft());
+  const [draft, setDraft] = useState(() => getDraft());
   const [workoutList, setWorkoutList] = useState(() => getWorkouts());
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(
     null,
@@ -84,8 +80,8 @@ function App() {
       usedExerciseIds.add(workoutExercise.exerciseId);
     }
   }
-  if (workoutDraft) {
-    for (const workoutExercise of workoutDraft.workoutExercises) {
+  if (draft) {
+    for (const workoutExercise of draft.workoutExercises) {
       usedExerciseIds.add(workoutExercise.exerciseId);
     }
   }
@@ -95,7 +91,7 @@ function App() {
     Object.keys(exercisesList).length === 0 &&
     Object.keys(templatesList).length === 0 &&
     Object.keys(workoutList).length === 0 &&
-    workoutDraft === null;
+    draft === null;
 
   const RENDERS = {
     [TABS.MUSCLES]: () => (
@@ -141,7 +137,7 @@ function App() {
           return (
             <WorkoutList
               workoutList={workoutList}
-              hasDraft={!!workoutDraft}
+              hasDraft={!!draft}
               selectedWorkoutId={selectedWorkoutId}
               onStartWorkout={handleStartWorkout}
               onSelectWorkout={handleSelectWorkout}
@@ -157,11 +153,11 @@ function App() {
             ></WorkoutViewer>
           );
         case WORKOUT_VIEWS.EDITOR:
-          if (!workoutDraft) return;
+          if (!draft) return;
 
           return (
             <WorkoutEditor
-              workoutDraft={workoutDraft}
+              draft={draft}
               exercisesList={exercisesList}
               musclesList={musclesList}
               templatesList={templatesList}
@@ -255,38 +251,43 @@ function App() {
   }
 
   function handleStartWorkout() {
-    if (workoutDraft) {
+    if (draft) {
       setWorkoutView(WORKOUT_VIEWS.EDITOR);
     } else {
       const todayDate = new Date().toISOString().split("T")[0];
       const name = `Workout ${todayDate}`;
-      const newWorkout = createWorkout(name, []);
-      saveWorkoutDraft(newWorkout);
-      setWorkoutDraft(newWorkout);
+      const newDraft = createDraft(name, []);
+      saveDraft(newDraft);
+      setDraft(newDraft);
       setWorkoutView(WORKOUT_VIEWS.EDITOR);
     }
   }
 
   function handleFinalizeWorkout() {
-    if (!workoutDraft) return;
+    if (!draft) return;
 
-    saveWorkout(workoutDraft);
-    setWorkoutList((prev) => ({ ...prev, [workoutDraft.id]: workoutDraft }));
-    clearWorkoutDraft();
-    setWorkoutDraft(null);
-    setSelectedWorkoutId(workoutDraft.id);
+    const finishedWorkout = createWorkout(draft);
+
+    saveWorkout(finishedWorkout);
+    setWorkoutList((prev) => ({
+      ...prev,
+      [finishedWorkout.id]: finishedWorkout,
+    }));
+    clearDraft();
+    setDraft(null);
+    setSelectedWorkoutId(finishedWorkout.id);
     setWorkoutView(WORKOUT_VIEWS.LIST);
   }
 
   function handleDiscardDraft() {
-    setWorkoutDraft(null);
-    clearWorkoutDraft();
+    setDraft(null);
+    clearDraft();
     setWorkoutView(WORKOUT_VIEWS.LIST);
   }
 
-  function handleSaveDraft(draft: Workout) {
-    saveWorkoutDraft(draft);
-    setWorkoutDraft(draft);
+  function handleSaveDraft(draft: Draft) {
+    saveDraft(draft);
+    setDraft(draft);
   }
 
   function handleAddExercise(

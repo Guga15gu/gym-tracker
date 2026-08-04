@@ -1,3 +1,4 @@
+import type { Draft } from "./draft";
 import type { ExerciseSet } from "./exerciseSet";
 import type { Muscle } from "./muscle";
 
@@ -5,7 +6,7 @@ export type Workout = {
   id: string;
   name: string;
   startedAt: number;
-  endedAt: number | null;
+  endedAt: number;
   workoutExercises: WorkoutExercise[];
 };
 
@@ -51,26 +52,10 @@ export function createWorkoutExercise(
   };
 }
 
-/**
- * @throws {Error} if name is not string
- * @throws {Error} if workoutExercises is not array
- */
-export function createWorkout(
-  name: string,
-  workoutExercises: WorkoutExercise[],
-): Workout {
-  if (typeof name !== "string") {
-    throw new Error("Name is not string");
-  }
-  if (!Array.isArray(workoutExercises)) {
-    throw new Error("workoutExercises is not array");
-  }
-
+export function createWorkout(draft: Draft): Workout {
   return {
+    ...draft,
     id: crypto.randomUUID(),
-    name: name.trim(),
-    startedAt: Date.now(),
-    endedAt: null,
-    workoutExercises: workoutExercises,
+    endedAt: Date.now(),
   };
 }

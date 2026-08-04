@@ -1,27 +1,24 @@
 import { useState } from "react";
-import {
-  createWorkoutExercise,
-  type WorkoutExercise,
-  type Workout,
-} from "../data/workout";
+import { createWorkoutExercise, type WorkoutExercise } from "../data/workout";
 import { createExerciseSet } from "../data/exerciseSet";
 import ExercisesArea from "./ExercisesArea";
 import type { Exercise } from "../data/exercise";
 import type { Muscle } from "../data/muscle";
 import type { Template } from "../data/template";
+import type { Draft } from "../data/draft";
 
 type WorkoutEditorProps = {
-  workoutDraft: Workout;
+  draft: Draft;
   exercisesList: Record<string, Exercise>;
   musclesList: Record<string, Muscle>;
   templatesList: Record<string, Template>;
-  onSaveDraft: (draft: Workout) => void;
+  onSaveDraft: (draft: Draft) => void;
   onFinalizeWorkout: () => void;
   onDiscardDraft: () => void;
   onBack: () => void;
 };
 export default function WorkoutEditor({
-  workoutDraft,
+  draft,
   exercisesList,
   musclesList,
   templatesList,
@@ -33,7 +30,7 @@ export default function WorkoutEditor({
   const [showDiscardConfirmation, setShowDiscardConfirmation] = useState(false);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
 
-  const draftExercises = workoutDraft.workoutExercises;
+  const draftExercises = draft.workoutExercises;
   const templates = Object.values(templatesList);
 
   return (
@@ -64,10 +61,8 @@ export default function WorkoutEditor({
       <div className="workout-header">
         <input
           className="workout-name"
-          value={workoutDraft.name}
-          onChange={(e) =>
-            onSaveDraft({ ...workoutDraft, name: e.target.value })
-          }
+          value={draft.name}
+          onChange={(e) => onSaveDraft({ ...draft, name: e.target.value })}
         ></input>
         <button onClick={onBack} className="workout-back">
           Ver histórico
@@ -118,7 +113,7 @@ export default function WorkoutEditor({
       return createWorkoutExercise(exercise.name, exercise.id, muscles, sets);
     });
 
-    onSaveDraft({ ...workoutDraft, workoutExercises: draftExercises });
+    onSaveDraft({ ...draft, workoutExercises: draftExercises });
   }
 
   function handleDiscard() {
@@ -127,7 +122,7 @@ export default function WorkoutEditor({
 
   function handleChangeExercises(newExercises: WorkoutExercise[]) {
     onSaveDraft({
-      ...workoutDraft,
+      ...draft,
       workoutExercises: newExercises,
     });
   }
@@ -144,11 +139,11 @@ export default function WorkoutEditor({
       [],
     );
     const newExercises = [
-      ...workoutDraft.workoutExercises.slice(0, exerciseIndex),
+      ...draft.workoutExercises.slice(0, exerciseIndex),
       newExercise,
-      ...workoutDraft.workoutExercises.slice(exerciseIndex),
+      ...draft.workoutExercises.slice(exerciseIndex),
     ];
 
-    onSaveDraft({ ...workoutDraft, workoutExercises: newExercises });
+    onSaveDraft({ ...draft, workoutExercises: newExercises });
   }
 }
