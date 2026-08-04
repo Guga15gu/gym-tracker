@@ -28,6 +28,7 @@ import {
 } from "./data/workoutStore";
 import WorkoutViewer from "./components/WorkoutViewer";
 import { createWorkout, type Workout } from "./data/workout";
+import { seed } from "./data/seed";
 
 const TABS = {
   MUSCLES: "muscles",
@@ -60,6 +61,13 @@ function App() {
 
   const [currentTab, setCurrentTab] = useState(TABS.MUSCLES);
   const [workoutView, setWorkoutView] = useState(WORKOUT_VIEWS.LIST);
+
+  const isEmpty =
+    Object.keys(musclesList).length === 0 &&
+    Object.keys(exercisesList).length === 0 &&
+    Object.keys(templatesList).length === 0 &&
+    Object.keys(workoutList).length === 0 &&
+    workoutDraft === null;
 
   const RENDERS = {
     [TABS.MUSCLES]: () => (
@@ -152,6 +160,8 @@ function App() {
         ))}
       </nav>
 
+      {isEmpty && <button onClick={handleSeed}>Carregar seed default</button>}
+
       {TABS_ARRAY.map((tab) => (
         <div
           className={`tab-panel${tab.id !== currentTab ? " hidden" : ""}`}
@@ -163,6 +173,14 @@ function App() {
     </>
   );
 
+  function handleSeed() {
+    seed();
+
+    setMusclesList(getMuscles());
+    setExercisesList(getExercises());
+    setTemplatesList(getTemplates());
+    setWorkoutList(getWorkouts());
+  }
   function handleDeleteTemplate(templateId: string) {
     if (templateId === selectedTemplateId) {
       setSelectedTemplateId(null);
