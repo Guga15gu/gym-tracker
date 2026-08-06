@@ -26,7 +26,11 @@ export default function ExerciseList({
   const exercises = Object.values(exercisesList);
   const muscles = Object.values(musclesList);
 
-  const selectedNameMuscles = Array.from(selectedMuscles).map(
+  const validSelectedMuscles = new Set(
+    [...selectedMuscles].filter((muscle) => muscle in musclesList),
+  );
+
+  const selectedNameMuscles = Array.from(validSelectedMuscles).map(
     (muscleId) => musclesList[muscleId].name,
   );
 
@@ -98,7 +102,9 @@ export default function ExerciseList({
         />
         <button
           type="submit"
-          disabled={trimmedExerciseName === "" || selectedMuscles.size === 0}
+          disabled={
+            trimmedExerciseName === "" || validSelectedMuscles.size === 0
+          }
         >
           Adicionar {exerciseName}{" "}
         </button>
@@ -119,7 +125,7 @@ export default function ExerciseList({
               <li key={muscle.id}>
                 <input
                   type="checkbox"
-                  checked={selectedMuscles.has(muscle.id)}
+                  checked={validSelectedMuscles.has(muscle.id)}
                   onChange={() => handleSelectMusle(muscle.id)}
                 />
                 {muscle.name}
@@ -140,7 +146,7 @@ export default function ExerciseList({
   function handleAddExercise(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    onAddExercise(trimmedExerciseName, selectedMuscles);
+    onAddExercise(trimmedExerciseName, validSelectedMuscles);
 
     setExerciseName("");
     setSelectedMuscles(new Set());
@@ -151,7 +157,7 @@ export default function ExerciseList({
   }
 
   function handleSelectMusle(muscleId: string) {
-    const newSelectedMuscles = new Set(selectedMuscles);
+    const newSelectedMuscles = new Set(validSelectedMuscles);
 
     if (newSelectedMuscles.has(muscleId)) {
       newSelectedMuscles.delete(muscleId);
