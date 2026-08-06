@@ -4,16 +4,19 @@ import ExerciseModal from "./ExerciseModal";
 import type { WorkoutExercise } from "../data/workout";
 import type { Exercise } from "../data/exercise";
 import type { ExerciseSet } from "../data/exerciseSet";
+import type { ExerciseDirtyMap } from "../utils/generateExerciseDirtyMap";
 
 type ExercisesAreaProps = {
   exercises: WorkoutExercise[];
   exercisesList: Record<string, Exercise>;
+  exerciseDirtyMap?: ExerciseDirtyMap;
   onAddExercise: (exerciseId: string, exerciseIndex: number) => void;
   onChangeExercises: (exercises: WorkoutExercise[]) => void;
 };
 export default function ExercisesArea({
   exercises,
   exercisesList,
+  exerciseDirtyMap,
   onAddExercise,
   onChangeExercises,
 }: ExercisesAreaProps) {
@@ -54,6 +57,7 @@ export default function ExercisesArea({
 
               <SetsArea
                 sets={exercise.sets}
+                setDirtyMap={exerciseDirtyMap?.[exercise.id]}
                 onChangeSets={(newSets) =>
                   handleChangeSets(newSets, exercise.id)
                 }

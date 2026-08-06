@@ -7,6 +7,7 @@ import {
 import ExercisesArea from "./ExercisesArea";
 import type { Exercise } from "../data/exercise";
 import type { Muscle } from "../data/muscle";
+import { generateExerciseDirtyMap } from "../utils/generateExerciseDirtyMap";
 
 type TemplateEditorProps = {
   template: Template;
@@ -48,6 +49,10 @@ export default function TemplateEditor({
             };
           })}
           exercisesList={exercisesList}
+          exerciseDirtyMap={generateExerciseDirtyMap(
+            template.exercises,
+            draft.exercises,
+          )}
           onAddExercise={handleAddExercise}
           onChangeExercises={handleChangeExercises}
         ></ExercisesArea>

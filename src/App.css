@@ -110,3 +110,9 @@ h3 {
 .exercise-add button {
   width: 100%;
 }
+.newSet {
+  color: green;
+}
+.changedSet {
+  color: yellow;
+}

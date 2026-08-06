@@ -4,12 +4,17 @@ import {
   type ExerciseSet,
   isValidSetValue,
 } from "../data/exerciseSet";
-
+import type { SetDirtyMap, SetDirtyState } from "../utils/generateSetDirtyMap";
 type SetsAreaProps = {
   sets: ExerciseSet[];
+  setDirtyMap?: SetDirtyMap;
   onChangeSets: (sets: ExerciseSet[]) => void;
 };
-export default function SetsArea({ sets, onChangeSets }: SetsAreaProps) {
+export default function SetsArea({
+  sets,
+  setDirtyMap,
+  onChangeSets,
+}: SetsAreaProps) {
   const [newReps, setNewReps] = useState("0");
   const [newWeight, setNewWeight] = useState("0");
 
@@ -35,7 +40,9 @@ export default function SetsArea({ sets, onChangeSets }: SetsAreaProps) {
                 handleEditSet(set.id, e.target.value, String(set.weight))
               }
             />
-            <div>reps</div>
+            <div className={fieldClass(setDirtyMap?.[set.id], "reps")}>
+              reps
+            </div>
             <input
               type="number"
               value={set.weight}
@@ -43,7 +50,9 @@ export default function SetsArea({ sets, onChangeSets }: SetsAreaProps) {
                 handleEditSet(set.id, String(set.reps), e.target.value)
               }
             />
-            <div>kg</div>
+            <div className={fieldClass(setDirtyMap?.[set.id], "weight")}>
+              kg
+            </div>
             <button
               onClick={() => handleDeleteSet(set.id)}
               className="set-delete"
@@ -72,6 +81,17 @@ export default function SetsArea({ sets, onChangeSets }: SetsAreaProps) {
       </div>
     </div>
   );
+
+  function fieldClass(
+    state: SetDirtyState | undefined,
+    field: "reps" | "weight",
+  ): string {
+    if (state === undefined) return "";
+    else if (state.kind === "new") return "newSet";
+    else if (field === "reps" && state.repsChanged) return "changedSet";
+    else if (field === "weight" && state.weightChanged) return "changedSet";
+    else return "";
+  }
 
   function handleDeleteSet(setId: string) {
     onChangeSets(sets.filter((set) => set.id !== setId));
