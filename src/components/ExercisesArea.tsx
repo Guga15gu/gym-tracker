@@ -49,7 +49,13 @@ export default function ExercisesArea({
           <Fragment key={exercise.id}>
             <li className="exercise-item">
               <div className="exercise-description">
-                <h3>{exercise.name}</h3>
+                <h3
+                  className={
+                    exerciseDirtyMap?.[exercise.id]?.added ? "newExercise" : ""
+                  }
+                >
+                  {exercise.name}
+                </h3>
                 <div className="muscles-item">
                   {exercise.muscles.map((muscle) => muscle.name).join(", ")}
                 </div>
@@ -57,7 +63,7 @@ export default function ExercisesArea({
 
               <SetsArea
                 sets={exercise.sets}
-                setDirtyMap={exerciseDirtyMap?.[exercise.id]}
+                setDirtyMap={exerciseDirtyMap?.[exercise.id]?.setDirtyMap}
                 onChangeSets={(newSets) =>
                   handleChangeSets(newSets, exercise.id)
                 }
