@@ -207,7 +207,7 @@ function App() {
     }
 
     setExercisesList((prev) => {
-      const { [exerciseId]: deleted, ...rest } = prev;
+      const { [exerciseId]: _deleted, ...rest } = prev;
       return rest;
     });
     deleteExercise(exerciseId);
@@ -219,7 +219,7 @@ function App() {
     }
 
     setMusclesList((prev) => {
-      const { [muscleId]: deleted, ...rest } = prev;
+      const { [muscleId]: _deleted, ...rest } = prev;
       return rest;
     });
     deleteMuscle(muscleId);
@@ -239,7 +239,7 @@ function App() {
     }
 
     setTemplatesList((prev) => {
-      const { [templateId]: deleted, ...rest } = prev;
+      const { [templateId]: _deleted, ...rest } = prev;
       return rest;
     });
     deleteTemplate(templateId);

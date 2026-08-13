@@ -17,7 +17,7 @@ export function saveTemplate(template: Template): void {
 }
 
 export function deleteTemplate(templateId: string): void {
-  const { [templateId]: deleted, ...rest } = getTemplates();
+  const { [templateId]: _deleted, ...rest } = getTemplates();
 
   localStorage.setItem("templates", JSON.stringify(rest));
 }
