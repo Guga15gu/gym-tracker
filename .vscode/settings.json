@@ -5,6 +5,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
+  "eslint.workingDirectories": ["server"],
 
   "[javascript]": {
     "editor.tabSize": 2
