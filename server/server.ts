@@ -1,12 +1,16 @@
 import { createServer } from "node:http";
+import { handleMuscles } from "./muscleRoutes.ts";
+import { pool } from "./db.ts";
 
 const hostname = "127.0.0.1";
 const port = 3000;
 
 const server = createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end("Hello World");
+  if (req.method === "GET" && req.url === "/muscles") {
+    return handleMuscles(pool, res);
+  }
+  res.writeHead(404, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ error: "Not found" }));
 });
 
 server.listen(port, hostname, () => {
