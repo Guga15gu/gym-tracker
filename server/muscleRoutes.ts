@@ -11,6 +11,32 @@ export async function handleMuscles(pool: Pool, res: ServerResponse) {
   res.end(JSON.stringify(result.rows));
 }
 
+export async function handleDeleteMuscle(
+  pool: Pool,
+  id: string,
+  res: ServerResponse,
+) {
+  try {
+    const query = "DELETE FROM muscles WHERE id = $1";
+    const result = await pool.query(query, [id]);
+    if (result.rowCount === 1) {
+      res.writeHead(204);
+      return res.end();
+    }
+    res.writeHead(404);
+    return res.end();
+  } catch (err) {
+    console.error(err);
+
+    if (err instanceof Error && "code" in err && err.code === "22P02") {
+      res.writeHead(400);
+      return res.end();
+    }
+    res.writeHead(500);
+    return res.end();
+  }
+}
+
 export async function handleAddMuscle(
   pool: Pool,
   req: IncomingMessage,
