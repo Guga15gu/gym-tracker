@@ -7,8 +7,7 @@ import type { ExerciseSet } from "../data/exerciseSet";
 import type { ExerciseDirtyMap } from "../utils/generateExerciseDirtyMap";
 
 type ModalAction =
-  | { kind: "add"; exerciseIndex: number }
-  | { kind: "replace"; id: string };
+  { kind: "add"; exerciseIndex: number } | { kind: "replace"; id: string };
 
 type ExercisesAreaProps = {
   exercises: WorkoutExercise[];
@@ -54,70 +53,73 @@ export default function ExercisesArea({
       ></ExerciseModal>
 
       <ul className="exercise-list">
-        {exercises.map((exercise, index) => (
-          <Fragment key={exercise.id}>
-            <li className="exercise-item">
-              <div className="exercise-description">
-                <h3
-                  className={
-                    exerciseDirtyMap?.[exercise.id]?.added ? "newExercise" : ""
+        {exercises.map((exercise, index) => {
+          let exerciseClass = "";
+          if (exerciseDirtyMap?.[exercise.id]?.added) {
+            exerciseClass = "newExercise";
+          } else if (exerciseDirtyMap?.[exercise.id]?.replaced) {
+            exerciseClass = "replacedExercise";
+          }
+
+          return (
+            <Fragment key={exercise.id}>
+              <li className="exercise-item">
+                <div className="exercise-description">
+                  <h3 className={exerciseClass}>{exercise.name}</h3>
+                  <div className="muscles-item">
+                    {exercise.muscles.map((muscle) => muscle.name).join(", ")}
+                  </div>
+                </div>
+
+                <SetsArea
+                  sets={exercise.sets}
+                  setDirtyMap={exerciseDirtyMap?.[exercise.id]?.setDirtyMap}
+                  onChangeSets={(newSets) =>
+                    handleChangeSets(newSets, exercise.id)
                   }
+                ></SetsArea>
+
+                <div className="exercise-actions">
+                  <div className="exercise-reorder">
+                    {index !== 0 && (
+                      <button onClick={() => handleMove(index - 1, index)}>
+                        Mover para cima
+                      </button>
+                    )}
+                    {index !== exercises.length - 1 && (
+                      <button onClick={() => handleMove(index, index + 1)}>
+                        Mover para baixo
+                      </button>
+                    )}
+                  </div>
+                  <div className="exercise-change">
+                    <button
+                      onClick={() => handleDeleteExercise(exercise.id)}
+                      className="exercise-delete"
+                    >
+                      Deletar exercício
+                    </button>
+                    <button
+                      onClick={() => handleReplaceExercise(exercise.id)}
+                      className="exercise-replace"
+                    >
+                      Substituir Exercício
+                    </button>
+                  </div>
+                </div>
+              </li>
+              <li className="exercise-add">
+                <button
+                  onClick={() => {
+                    setModalAction({ kind: "add", exerciseIndex: index + 1 });
+                  }}
                 >
-                  {exercise.name}
-                </h3>
-                <div className="muscles-item">
-                  {exercise.muscles.map((muscle) => muscle.name).join(", ")}
-                </div>
-              </div>
-
-              <SetsArea
-                sets={exercise.sets}
-                setDirtyMap={exerciseDirtyMap?.[exercise.id]?.setDirtyMap}
-                onChangeSets={(newSets) =>
-                  handleChangeSets(newSets, exercise.id)
-                }
-              ></SetsArea>
-
-              <div className="exercise-actions">
-                <div className="exercise-reorder">
-                  {index !== 0 && (
-                    <button onClick={() => handleMove(index - 1, index)}>
-                      Mover para cima
-                    </button>
-                  )}
-                  {index !== exercises.length - 1 && (
-                    <button onClick={() => handleMove(index, index + 1)}>
-                      Mover para baixo
-                    </button>
-                  )}
-                </div>
-                <div className="exercise-change">
-                  <button
-                    onClick={() => handleDeleteExercise(exercise.id)}
-                    className="exercise-delete"
-                  >
-                    Deletar exercício
-                  </button>
-                  <button
-                    onClick={() => handleReplaceExercise(exercise.id)}
-                    className="exercise-replace"
-                  >
-                    Substituir Exercício
-                  </button>
-                </div>
-              </div>
-            </li>
-            <li className="exercise-add">
-              <button
-                onClick={() => {
-                  setModalAction({ kind: "add", exerciseIndex: index + 1 });
-                }}
-              >
-                Adicionar Exercício {index + 1}
-              </button>
-            </li>
-          </Fragment>
-        ))}
+                  Adicionar Exercício {index + 1}
+                </button>
+              </li>
+            </Fragment>
+          );
+        })}
       </ul>
     </div>
   );
