@@ -55,6 +55,7 @@ export default function TemplateEditor({
           )}
           onAddExercise={handleAddExercise}
           onChangeExercises={handleChangeExercises}
+          onReplaceExercise={handleReplaceExercise}
         ></ExercisesArea>
       </>
     );
@@ -69,6 +70,21 @@ export default function TemplateEditor({
       {templateForm}
     </>
   );
+
+  function handleReplaceExercise(entryId: string, newExerciseId: string) {
+    setDraft((prev) => {
+      return {
+        ...prev,
+        exercises: prev.exercises.map((exercise) => {
+          if (exercise.id === entryId) {
+            return { ...exercise, exerciseId: newExerciseId };
+          } else {
+            return exercise;
+          }
+        }),
+      };
+    });
+  }
 
   function handleChangeExercises(newExercises: TemplateExercise[]) {
     setDraft((prev) => {

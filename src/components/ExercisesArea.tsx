@@ -6,12 +6,17 @@ import type { Exercise } from "../data/exercise";
 import type { ExerciseSet } from "../data/exerciseSet";
 import type { ExerciseDirtyMap } from "../utils/generateExerciseDirtyMap";
 
+type ModalAction =
+  | { kind: "add"; exerciseIndex: number }
+  | { kind: "replace"; id: string };
+
 type ExercisesAreaProps = {
   exercises: WorkoutExercise[];
   exercisesList: Record<string, Exercise>;
   exerciseDirtyMap?: ExerciseDirtyMap;
   onAddExercise: (exerciseId: string, exerciseIndex: number) => void;
   onChangeExercises: (exercises: WorkoutExercise[]) => void;
+  onReplaceExercise: (entryId: string, newExerciseId: string) => void;
 };
 export default function ExercisesArea({
   exercises,
@@ -19,28 +24,32 @@ export default function ExercisesArea({
   exerciseDirtyMap,
   onAddExercise,
   onChangeExercises,
+  onReplaceExercise,
 }: ExercisesAreaProps) {
-  const [isOpenSelectExercise, setIsOpenSelectExercise] = useState(false);
-  const [exerciseIndex, setExerciseIndex] = useState(0);
+  const [modalAction, setModalAction] = useState<ModalAction | null>(null);
 
   return (
     <div className="exercise-area">
       <button
         onClick={() => {
-          setIsOpenSelectExercise(true);
-          setExerciseIndex(0);
+          setModalAction({ kind: "add", exerciseIndex: 0 });
         }}
       >
         Adicionar Exercício
       </button>
 
       <ExerciseModal
-        isOpen={isOpenSelectExercise}
-        onClose={() => setIsOpenSelectExercise(false)}
+        isOpen={modalAction !== null}
+        onClose={() => setModalAction(null)}
         exercisesList={exercisesList}
         onSelect={(exerciseId) => {
-          onAddExercise(exerciseId, exerciseIndex);
-          setIsOpenSelectExercise(false);
+          if (modalAction?.kind === "add") {
+            onAddExercise(exerciseId, modalAction.exerciseIndex);
+          } else if (modalAction?.kind === "replace") {
+            onReplaceExercise(modalAction.id, exerciseId);
+          }
+
+          setModalAction(null);
         }}
       ></ExerciseModal>
 
@@ -82,12 +91,18 @@ export default function ExercisesArea({
                     </button>
                   )}
                 </div>
-                <div>
+                <div className="exercise-change">
                   <button
                     onClick={() => handleDeleteExercise(exercise.id)}
                     className="exercise-delete"
                   >
                     Deletar exercício
+                  </button>
+                  <button
+                    onClick={() => handleReplaceExercise(exercise.id)}
+                    className="exercise-replace"
+                  >
+                    Substituir Exercício
                   </button>
                 </div>
               </div>
@@ -95,8 +110,7 @@ export default function ExercisesArea({
             <li className="exercise-add">
               <button
                 onClick={() => {
-                  setExerciseIndex(index + 1);
-                  setIsOpenSelectExercise(true);
+                  setModalAction({ kind: "add", exerciseIndex: index + 1 });
                 }}
               >
                 Adicionar Exercício {index + 1}
@@ -107,6 +121,10 @@ export default function ExercisesArea({
       </ul>
     </div>
   );
+
+  function handleReplaceExercise(exerciseId: string) {
+    setModalAction({ kind: "replace", id: exerciseId });
+  }
 
   function handleDeleteExercise(exerciseId: string) {
     onChangeExercises(

@@ -101,10 +101,36 @@ export default function WorkoutEditor({
           exercisesList={exercisesList}
           onAddExercise={handleAddExercise}
           onChangeExercises={handleChangeExercises}
+          onReplaceExercise={handleReplaceExercise}
         ></ExercisesArea>
       </div>
     </>
   );
+
+  function handleReplaceExercise(entryId: string, newExerciseId: string) {
+    onSaveDraft({
+      ...draft,
+      workoutExercises: draft.workoutExercises.map((workoutExercise) => {
+        if (workoutExercise.id === entryId) {
+          const newExerciseMuscles = exercisesList[newExerciseId].muscles.map(
+            (muscleId) => ({
+              id: muscleId,
+              name: musclesList[muscleId].name,
+            }),
+          );
+
+          return {
+            ...workoutExercise,
+            name: exercisesList[newExerciseId].name,
+            exerciseId: newExerciseId,
+            muscles: newExerciseMuscles,
+          };
+        } else {
+          return workoutExercise;
+        }
+      }),
+    });
+  }
 
   function handleSelectTemplate(templateId: string) {
     setShowTemplateModal(false);
