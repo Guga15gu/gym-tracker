@@ -11,9 +11,10 @@ export function validateMuscleBody(body: unknown | null): MuscleBodyValidation {
   ) {
     return { kind: "error", status: 400, message: "name is not string" };
   }
-  if (body.name.trim() === "") {
+  const trimmedName = body.name.trim();
+  if (trimmedName === "") {
     return { kind: "error", status: 422, message: "name is empty" };
   }
 
-  return { kind: "success", name: body.name };
+  return { kind: "success", name: trimmedName };
 }
