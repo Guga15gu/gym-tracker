@@ -6,6 +6,7 @@ import {
   handlePatchMuscle,
 } from "./muscleRoutes.ts";
 import { pool } from "./db.ts";
+import { sendJson } from "./httpUtils.ts";
 
 const hostname = "127.0.0.1";
 const port = 3000;
@@ -32,8 +33,7 @@ const server = createServer((req, res) => {
     }
   }
 
-  res.writeHead(404, { "Content-Type": "application/json" });
-  res.end(JSON.stringify({ error: "Not found" }));
+  return sendJson(res, 404, { error: "Not found" });
 });
 
 server.listen(port, hostname, () => {

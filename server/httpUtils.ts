@@ -1,4 +1,4 @@
-import { IncomingMessage } from "node:http";
+import { IncomingMessage, ServerResponse } from "node:http";
 
 export function readBody(req: IncomingMessage): Promise<unknown | null> {
   return new Promise((resolve) => {
@@ -17,4 +17,9 @@ export function readBody(req: IncomingMessage): Promise<unknown | null> {
       }
     });
   });
+}
+
+export function sendJson(res: ServerResponse, status: number, payload?: object) {
+  res.writeHead(status, payload ? { "Content-Type": "application/json" } : undefined);
+  res.end(payload ? JSON.stringify(payload) : undefined);
 }

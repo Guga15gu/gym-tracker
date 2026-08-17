@@ -1,6 +1,6 @@
 import type { Pool } from "pg";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { readBody } from "./httpUtils.ts";
+import { readBody, sendJson } from "./httpUtils.ts";
 import { pgErrorToStatus } from "./pgErrors.ts";
 import { validateMuscleBody } from "./data/muscle.ts";
 
@@ -9,8 +9,7 @@ type MuscleRow = { id: string; name: string };
 export async function handleMuscles(pool: Pool, res: ServerResponse) {
   const result = await pool.query<MuscleRow>("SELECT id, name FROM muscles");
 
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.end(JSON.stringify(result.rows));
+  return sendJson(res, 200, result.rows);
 }
 
 export async function handleDeleteMuscle(
@@ -22,15 +21,13 @@ export async function handleDeleteMuscle(
     const query = "DELETE FROM muscles WHERE id = $1";
     const result = await pool.query(query, [id]);
     if (result.rowCount === 1) {
-      res.writeHead(204);
-      return res.end();
+      return sendJson(res, 204);
     }
-    res.writeHead(404);
-    return res.end();
+    return sendJson(res, 404);
   } catch (err) {
     const status = pgErrorToStatus(err);
-    res.writeHead(status);
-    return res.end();
+
+    return sendJson(res, status);
   }
 }
 
@@ -44,8 +41,7 @@ export async function handlePatchMuscle(
   const validation = validateMuscleBody(body);
 
   if (validation.kind === "error") {
-    res.writeHead(validation.status);
-    return res.end(JSON.stringify({ error: validation.message }));
+    return sendJson(res, validation.status, { error: validation.message });
   }
 
   try {
@@ -53,15 +49,13 @@ export async function handlePatchMuscle(
       "UPDATE muscles SET name = $1 WHERE id = $2 RETURNING id, name";
     const result = await pool.query(query, [validation.name, id]);
     if (result.rowCount === 1) {
-      res.writeHead(200);
-      return res.end(JSON.stringify(result.rows));
+      return sendJson(res, 200, result.rows);
     }
-    res.writeHead(404);
-    return res.end();
+    return sendJson(res, 404);
   } catch (err) {
     const status = pgErrorToStatus(err);
-    res.writeHead(status);
-    return res.end();
+
+    return sendJson(res, status);
   }
 }
 
@@ -74,19 +68,17 @@ export async function handleAddMuscle(
   const validation = validateMuscleBody(body);
 
   if (validation.kind === "error") {
-    res.writeHead(validation.status);
-    return res.end(JSON.stringify({ error: validation.message }));
+    return sendJson(res, validation.status, { error: validation.message });
   }
 
   try {
     const query = "INSERT INTO muscles(name) VALUES($1) RETURNING id, name";
     const result = await pool.query(query, [validation.name]);
 
-    res.writeHead(201, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(result.rows));
+    return sendJson(res, 201, result.rows);
   } catch (err) {
     const status = pgErrorToStatus(err);
-    res.writeHead(status);
-    return res.end();
+
+    return sendJson(res, status);
   }
 }
