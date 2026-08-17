@@ -3,6 +3,7 @@ import {
   handleAddMuscle,
   handleDeleteMuscle,
   handleMuscles,
+  handlePatchMuscle,
 } from "./muscleRoutes.ts";
 import { pool } from "./db.ts";
 
@@ -21,9 +22,12 @@ const server = createServer((req, res) => {
       }
     }
     if (parts.length === 3 && parts[2] !== "") {
+      const id = parts[2];
       if (req.method === "DELETE") {
-        const id = parts[2];
         return handleDeleteMuscle(pool, id, res);
+      }
+      if (req.method === "PATCH") {
+        return handlePatchMuscle(pool, id, req, res);
       }
     }
   }

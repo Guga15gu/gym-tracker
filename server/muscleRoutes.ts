@@ -37,6 +37,54 @@ export async function handleDeleteMuscle(
   }
 }
 
+export async function handlePatchMuscle(
+  pool: Pool,
+  id: string,
+  req: IncomingMessage,
+  res: ServerResponse,
+) {
+  const body = await readBody(req);
+
+  if (
+    !body ||
+    typeof body !== "object" ||
+    !("name" in body) ||
+    typeof body.name !== "string"
+  ) {
+    res.writeHead(400);
+    return res.end(JSON.stringify({ error: "name is not string" }));
+  }
+
+  if (body.name.trim() === "") {
+    res.writeHead(422);
+    return res.end(JSON.stringify({ error: "name is empty" }));
+  }
+
+  try {
+    const query =
+      "UPDATE muscles SET name = $1 WHERE id = $2 RETURNING id, name";
+    const result = await pool.query(query, [body.name, id]);
+    if (result.rowCount === 1) {
+      res.writeHead(200);
+      return res.end(JSON.stringify(result.rows));
+    }
+    res.writeHead(404);
+    return res.end();
+  } catch (err) {
+    if (err instanceof Error && "code" in err && err.code === "22P02") {
+      res.writeHead(400);
+      return res.end();
+    }
+    if (err instanceof Error && "code" in err && err.code === "23505") {
+      res.writeHead(409);
+      return res.end();
+    } else {
+      res.writeHead(500);
+      return res.end();
+    }
+  }
+}
+
 export async function handleAddMuscle(
   pool: Pool,
   req: IncomingMessage,
