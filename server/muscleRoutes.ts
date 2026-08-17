@@ -1,6 +1,7 @@
 import type { Pool } from "pg";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { readBody } from "./httpUtils.ts";
+import { pgErrorToStatus } from "./pgErrors.ts";
 
 type MuscleRow = { id: string; name: string };
 
@@ -26,13 +27,8 @@ export async function handleDeleteMuscle(
     res.writeHead(404);
     return res.end();
   } catch (err) {
-    console.error(err);
-
-    if (err instanceof Error && "code" in err && err.code === "22P02") {
-      res.writeHead(400);
-      return res.end();
-    }
-    res.writeHead(500);
+    const status = pgErrorToStatus(err);
+    res.writeHead(status);
     return res.end();
   }
 }
@@ -71,17 +67,9 @@ export async function handlePatchMuscle(
     res.writeHead(404);
     return res.end();
   } catch (err) {
-    if (err instanceof Error && "code" in err && err.code === "22P02") {
-      res.writeHead(400);
-      return res.end();
-    }
-    if (err instanceof Error && "code" in err && err.code === "23505") {
-      res.writeHead(409);
-      return res.end();
-    } else {
-      res.writeHead(500);
-      return res.end();
-    }
+    const status = pgErrorToStatus(err);
+    res.writeHead(status);
+    return res.end();
   }
 }
 
@@ -114,12 +102,8 @@ export async function handleAddMuscle(
     res.writeHead(201, { "Content-Type": "application/json" });
     res.end(JSON.stringify(result.rows));
   } catch (err) {
-    if (err instanceof Error && "code" in err && err.code === "23505") {
-      res.writeHead(409);
-      return res.end();
-    } else {
-      res.writeHead(500);
-      return res.end();
-    }
+    const status = pgErrorToStatus(err);
+    res.writeHead(status);
+    return res.end();
   }
 }
