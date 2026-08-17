@@ -1,39 +1,12 @@
 import { createServer } from "node:http";
-import {
-  handleAddMuscle,
-  handleDeleteMuscle,
-  handleMuscles,
-  handlePatchMuscle,
-} from "./muscleRoutes.ts";
+import { router } from "./router.ts";
 import { pool } from "./db.ts";
-import { sendJson } from "./httpUtils.ts";
 
 const hostname = "127.0.0.1";
 const port = 3000;
 
 const server = createServer((req, res) => {
-  const parts = new URL(req.url ?? "/", "http://localhost").pathname.split("/");
-  if (parts[1] === "muscles") {
-    if (parts.length === 2) {
-      if (req.method === "GET") {
-        return handleMuscles(pool, res);
-      }
-      if (req.method === "POST") {
-        return handleAddMuscle(pool, req, res);
-      }
-    }
-    if (parts.length === 3 && parts[2] !== "") {
-      const id = parts[2];
-      if (req.method === "DELETE") {
-        return handleDeleteMuscle(pool, id, res);
-      }
-      if (req.method === "PATCH") {
-        return handlePatchMuscle(pool, id, req, res);
-      }
-    }
-  }
-
-  return sendJson(res, 404, { error: "Not found" });
+  return router(req, res, pool);
 });
 
 server.listen(port, hostname, () => {
