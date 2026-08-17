@@ -2,6 +2,7 @@ import type { Pool } from "pg";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { readBody } from "./httpUtils.ts";
 import { pgErrorToStatus } from "./pgErrors.ts";
+import { validateMuscleBody } from "./data/muscle.ts";
 
 type MuscleRow = { id: string; name: string };
 
@@ -40,26 +41,17 @@ export async function handlePatchMuscle(
   res: ServerResponse,
 ) {
   const body = await readBody(req);
+  const validation = validateMuscleBody(body);
 
-  if (
-    !body ||
-    typeof body !== "object" ||
-    !("name" in body) ||
-    typeof body.name !== "string"
-  ) {
-    res.writeHead(400);
-    return res.end(JSON.stringify({ error: "name is not string" }));
-  }
-
-  if (body.name.trim() === "") {
-    res.writeHead(422);
-    return res.end(JSON.stringify({ error: "name is empty" }));
+  if (validation.kind === "error") {
+    res.writeHead(validation.status);
+    return res.end(JSON.stringify({ error: validation.message }));
   }
 
   try {
     const query =
       "UPDATE muscles SET name = $1 WHERE id = $2 RETURNING id, name";
-    const result = await pool.query(query, [body.name, id]);
+    const result = await pool.query(query, [validation.name, id]);
     if (result.rowCount === 1) {
       res.writeHead(200);
       return res.end(JSON.stringify(result.rows));
@@ -79,25 +71,16 @@ export async function handleAddMuscle(
   res: ServerResponse,
 ) {
   const body = await readBody(req);
+  const validation = validateMuscleBody(body);
 
-  if (
-    !body ||
-    typeof body !== "object" ||
-    !("name" in body) ||
-    typeof body.name !== "string"
-  ) {
-    res.writeHead(400);
-    return res.end(JSON.stringify({ error: "name is not string" }));
-  }
-
-  if (body.name.trim() === "") {
-    res.writeHead(422);
-    return res.end(JSON.stringify({ error: "name is empty" }));
+  if (validation.kind === "error") {
+    res.writeHead(validation.status);
+    return res.end(JSON.stringify({ error: validation.message }));
   }
 
   try {
     const query = "INSERT INTO muscles(name) VALUES($1) RETURNING id, name";
-    const result = await pool.query(query, [body.name]);
+    const result = await pool.query(query, [validation.name]);
 
     res.writeHead(201, { "Content-Type": "application/json" });
     res.end(JSON.stringify(result.rows));
