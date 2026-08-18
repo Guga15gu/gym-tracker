@@ -49,7 +49,7 @@ export async function handlePatchMuscle(
       "UPDATE muscles SET name = $1 WHERE id = $2 RETURNING id, name";
     const result = await pool.query(query, [validation.name, id]);
     if (result.rowCount === 1) {
-      return sendJson(res, 200, result.rows);
+      return sendJson(res, 200, result.rows[0]);
     }
     return sendJson(res, 404);
   } catch (err) {
@@ -75,7 +75,7 @@ export async function handleAddMuscle(
     const query = "INSERT INTO muscles(name) VALUES($1) RETURNING id, name";
     const result = await pool.query(query, [validation.name]);
 
-    return sendJson(res, 201, result.rows);
+    return sendJson(res, 201, result.rows[0]);
   } catch (err) {
     const status = pgErrorToStatus(err);
 
