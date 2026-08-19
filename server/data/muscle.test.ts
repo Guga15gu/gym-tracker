@@ -6,7 +6,7 @@ function err(status: number, message: string) {
   return {
     kind: "error",
     status: status,
-    message: message,
+    payload: { error: message },
   };
 }
 

@@ -1,6 +1,11 @@
-const ERRORS = { "23505": 409, "22P02": 400 };
+const ERRORS = {
+  "23505": { status: 409, payload: { error: "Conflict: duplicated key" } },
+  "22P02": { status: 400, payload: { error: "Bad Request" } },
+};
 
-export function pgErrorToStatus(err: unknown): number {
+type ErrorResponse = { status: number; payload: { error: string } };
+
+export function pgErrorToResponse(err: unknown): ErrorResponse {
   if (
     err instanceof Error &&
     "code" in err &&
@@ -9,6 +14,8 @@ export function pgErrorToStatus(err: unknown): number {
   ) {
     return ERRORS[err.code as keyof typeof ERRORS];
   }
-  console.error(err);
-  return 500;
+  return {
+    status: 500,
+    payload: { error: "Internal Server Error" },
+  };
 }

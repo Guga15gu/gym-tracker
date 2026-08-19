@@ -30,5 +30,5 @@ export function router(req: IncomingMessage, res: ServerResponse, pool: Pool) {
     }
   }
 
-  return sendJson(res, 404, { error: "Not found" });
+  return sendJson(res, { status: 404, payload: { error: "Not found" } });
 }

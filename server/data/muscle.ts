@@ -1,6 +1,6 @@
 type MuscleBodyValidation =
   | { kind: "success"; name: string }
-  | { kind: "error"; status: number; message: string };
+  | { kind: "error"; status: number; payload: { error: string } };
 
 export function validateMuscleBody(body: unknown | null): MuscleBodyValidation {
   if (
@@ -9,11 +9,19 @@ export function validateMuscleBody(body: unknown | null): MuscleBodyValidation {
     !("name" in body) ||
     typeof body.name !== "string"
   ) {
-    return { kind: "error", status: 400, message: "name is not string" };
+    return {
+      kind: "error",
+      status: 400,
+      payload: { error: "name is not string" },
+    };
   }
   const trimmedName = body.name.trim();
   if (trimmedName === "") {
-    return { kind: "error", status: 422, message: "name is empty" };
+    return {
+      kind: "error",
+      status: 422,
+      payload: { error: "name is empty" },
+    };
   }
 
   return { kind: "success", name: trimmedName };

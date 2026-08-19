@@ -19,14 +19,13 @@ export function readBody(req: IncomingMessage): Promise<unknown | null> {
   });
 }
 
-export function sendJson(
-  res: ServerResponse,
-  status: number,
-  payload?: object,
-) {
-  res.writeHead(
-    status,
-    payload ? { "Content-Type": "application/json" } : undefined,
-  );
-  res.end(payload ? JSON.stringify(payload) : undefined);
+type JsonResponse = { status: number; payload: object };
+export function sendJson(res: ServerResponse, response: JsonResponse) {
+  res.writeHead(response.status, { "Content-Type": "application/json" });
+  return res.end(JSON.stringify(response.payload));
+}
+
+export function send204(res: ServerResponse) {
+  res.writeHead(204);
+  return res.end();
 }
